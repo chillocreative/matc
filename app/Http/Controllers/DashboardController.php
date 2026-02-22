@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\CategoryType;
 use App\Models\Attendance;
 use App\Models\Meeting;
 use App\Models\Member;
@@ -21,25 +22,17 @@ class DashboardController extends Controller
     {
         return Inertia::render('Dashboard', [
             'stats' => [
-                'total_members' => Member::count(),
-                'total_meetings' => Meeting::count(),
-                'total_attendances' => Attendance::count(),
-                'attendance_rate' => $this->calculateAttendanceRate(),
+                'anggota' => $this->countByCategory(CategoryType::Anggota),
+                'ajk_cabang' => $this->countByCategory(CategoryType::AjkCabang),
+                'amk' => $this->countByCategory(CategoryType::Amk),
+                'wanita' => $this->countByCategory(CategoryType::Wanita),
             ],
             'upcoming_meetings' => $this->meetingService->upcoming(5),
         ]);
     }
 
-    private function calculateAttendanceRate(): float
+    private function countByCategory(CategoryType $category): int
     {
-        $total = Attendance::count();
-
-        if ($total === 0) {
-            return 0;
-        }
-
-        $present = Attendance::where('status', 'present')->count();
-
-        return round(($present / $total) * 100, 1);
+        return Attendance::whereHas('member', fn ($q) => $q->where('category_type', $category->value))->count();
     }
 }
