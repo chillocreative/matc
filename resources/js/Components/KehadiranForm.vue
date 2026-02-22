@@ -192,6 +192,14 @@ function clearFieldError(field) {
         errors.value = rest;
     }
 }
+
+function forceUppercase(ref) {
+    ref.value = ref.value.toUpperCase();
+}
+
+function forceDigits(ref) {
+    ref.value = ref.value.replace(/\D/g, '');
+}
 </script>
 
 <template>
@@ -235,8 +243,8 @@ function clearFieldError(field) {
                     v-model="name"
                     type="text"
                     autocomplete="name"
-                    @input="clearFieldError('name')"
-                    class="mt-1 block w-full rounded-lg shadow-sm text-base sm:text-lg"
+                    @input="forceUppercase(name); clearFieldError('name')"
+                    class="mt-1 block w-full rounded-lg shadow-sm text-base sm:text-lg uppercase"
                     :class="[
                         dark
                             ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 focus:ring-2 ' + (errors.name ? 'ring-red-400/50 focus:ring-red-400' : 'ring-white/15 focus:ring-sky-400')
@@ -274,9 +282,10 @@ function clearFieldError(field) {
                     id="phone_number"
                     v-model="phone_number"
                     type="tel"
-                    inputmode="tel"
+                    inputmode="numeric"
                     placeholder="0121234567"
                     autocomplete="tel"
+                    @input="forceDigits(phone_number)"
                     class="mt-1 block w-full rounded-lg shadow-sm"
                     :class="dark ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
                 />
@@ -289,7 +298,8 @@ function clearFieldError(field) {
                     id="address"
                     v-model="address"
                     rows="2"
-                    class="mt-1 block w-full rounded-lg shadow-sm"
+                    @input="forceUppercase(address)"
+                    class="mt-1 block w-full rounded-lg shadow-sm uppercase"
                     :class="dark ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
                 ></textarea>
             </div>
@@ -301,9 +311,9 @@ function clearFieldError(field) {
                     id="position_name"
                     v-model="position_name"
                     type="text"
-                    placeholder="Cth: Pengerusi, Setiausaha, Bendahari"
-                    @input="clearFieldError('position_name')"
-                    class="mt-1 block w-full rounded-lg shadow-sm text-base sm:text-lg"
+                    placeholder="Cth: PENGERUSI, SETIAUSAHA, BENDAHARI"
+                    @input="forceUppercase(position_name); clearFieldError('position_name')"
+                    class="mt-1 block w-full rounded-lg shadow-sm text-base sm:text-lg uppercase"
                     :class="[
                         dark
                             ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 focus:ring-2 ' + (errors.position_name ? 'ring-red-400/50 focus:ring-red-400' : 'ring-white/15 focus:ring-sky-400')
@@ -342,9 +352,9 @@ function clearFieldError(field) {
                     id="position_name"
                     v-model="position_name"
                     type="text"
-                    placeholder="Cth: Setiausaha, Bendahari"
-                    @input="clearFieldError('position_name')"
-                    class="mt-1 block w-full rounded-lg shadow-sm"
+                    placeholder="Cth: SETIAUSAHA, BENDAHARI"
+                    @input="forceUppercase(position_name); clearFieldError('position_name')"
+                    class="mt-1 block w-full rounded-lg shadow-sm uppercase"
                     :class="[
                         dark
                             ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 focus:ring-2 ' + (errors.position_name ? 'ring-red-400/50 focus:ring-red-400' : 'ring-white/15 focus:ring-sky-400')
