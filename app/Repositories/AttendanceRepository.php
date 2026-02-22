@@ -1,0 +1,63 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories;
+
+use App\Models\Attendance;
+use Illuminate\Database\Eloquent\Collection;
+
+class AttendanceRepository
+{
+    public function __construct(
+        private readonly Attendance $model,
+    ) {}
+
+    public function getByMeeting(int $meetingId): Collection
+    {
+        return $this->model
+            ->where('meeting_id', $meetingId)
+            ->with('member')
+            ->latest('created_at')
+            ->get();
+    }
+
+    public function existsForMeetingAndIcHash(int $meetingId, string $icHash): bool
+    {
+        return $this->model
+            ->where('meeting_id', $meetingId)
+            ->where('ic_number_hash', $icHash)
+            ->exists();
+    }
+
+    public function upsertForMeetingAndMember(int $meetingId, int $memberId, array $data): Attendance
+    {
+        return $this->model->updateOrCreate(
+            [
+                'meeting_id' => $meetingId,
+                'member_id' => $memberId,
+            ],
+            $data,
+        );
+    }
+
+    public function createRecord(array $data): Attendance
+    {
+        return $this->model->create($data);
+    }
+
+    public function countByMeeting(int $meetingId): int
+    {
+        return $this->model
+            ->where('meeting_id', $meetingId)
+            ->count();
+    }
+
+    public function countPresentByMeeting(int $meetingId): int
+    {
+        return $this->model
+            ->where('meeting_id', $meetingId)
+            ->where('status', 'present')
+            ->count();
+    }
+}
