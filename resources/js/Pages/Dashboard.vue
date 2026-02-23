@@ -76,7 +76,7 @@ const statCards = [
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-sm font-semibold text-white">Wanita</div>
+                                <div class="text-sm font-semibold text-white">MATCWC</div>
                                 <div class="text-xs text-sky-200/50">QR kehadiran</div>
                             </div>
                         </Link>
@@ -91,7 +91,7 @@ const statCards = [
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-sm font-semibold text-white">AMK</div>
+                                <div class="text-sm font-semibold text-white">MATCAMK</div>
                                 <div class="text-xs text-sky-200/50">QR kehadiran</div>
                             </div>
                         </Link>
