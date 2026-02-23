@@ -16,10 +16,22 @@ class MemberRepository extends BaseRepository implements MemberRepositoryInterfa
         parent::__construct($model);
     }
 
-    public function search(string $query, int $perPage = 15): LengthAwarePaginator
+    public function search(string $query, int $perPage = 15, ?string $category = null): LengthAwarePaginator
     {
-        return $this->model->where('name', 'like', "%{$query}%")
-            ->orWhere('ic_number_hash', IcHasher::hash($query))
+        return $this->model
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                    ->orWhere('ic_number_hash', IcHasher::hash($query));
+            })
+            ->when($category, fn ($q) => $q->where('category_type', $category))
+            ->latest('created_at')
+            ->paginate($perPage);
+    }
+
+    public function paginateByCategory(string $category, int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->model
+            ->where('category_type', $category)
             ->latest('created_at')
             ->paginate($perPage);
     }

@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\QrAttendanceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,6 +42,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendances/verify', [AttendanceController::class, 'verify'])
         ->middleware('throttle:verify-attendance')
         ->name('attendances.verify');
+
+    // PDF exports
+    Route::get('/export/attendance-pdf', [ExportController::class, 'attendancePdf'])->name('export.attendance.pdf');
+    Route::get('/export/members-pdf', [ExportController::class, 'membersPdf'])->name('export.members.pdf');
 
     // QR code display pages (admin)
     Route::get('/qr/matc', [QrAttendanceController::class, 'show'])->defaults('category', 'matc')->name('admin.qr.matc');

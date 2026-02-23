@@ -94,13 +94,22 @@ const statusColors = {
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-medium text-white">{{ meeting.title }}</h3>
-                            <Link
-                                v-if="page.props.auth.user.is_admin"
-                                :href="route('attendances.mark', meeting.id)"
-                                class="inline-flex items-center rounded-md bg-sky-500 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 hover:bg-sky-400"
-                            >
-                                Rekod Kehadiran
-                            </Link>
+                            <div class="flex items-center gap-2">
+                                <a
+                                    v-if="selectedCategory"
+                                    :href="route('export.attendance.pdf', { meeting_id: selectedMeeting, category: selectedCategory })"
+                                    class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-600/30 hover:bg-emerald-500"
+                                >
+                                    Muat Turun PDF
+                                </a>
+                                <Link
+                                    v-if="page.props.auth.user.is_admin"
+                                    :href="route('attendances.mark', meeting.id)"
+                                    class="inline-flex items-center rounded-md bg-sky-500 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 hover:bg-sky-400"
+                                >
+                                    Rekod Kehadiran
+                                </Link>
+                            </div>
                         </div>
 
                         <table v-if="attendances.length" class="min-w-full divide-y divide-white/10">

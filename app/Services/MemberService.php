@@ -14,10 +14,14 @@ class MemberService
         private readonly MemberRepositoryInterface $repository,
     ) {}
 
-    public function list(?string $search, int $perPage = 15): LengthAwarePaginator
+    public function list(?string $search, int $perPage = 15, ?string $category = null): LengthAwarePaginator
     {
         if ($search) {
-            return $this->repository->search($search, $perPage);
+            return $this->repository->search($search, $perPage, $category);
+        }
+
+        if ($category) {
+            return $this->repository->paginateByCategory($category, $perPage);
         }
 
         return $this->repository->paginate($perPage);

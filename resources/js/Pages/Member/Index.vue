@@ -10,13 +10,23 @@ const props = defineProps({
 
 const page = usePage();
 const search = ref(props.filters.search || '');
+const selectedCategory = ref(props.filters.category || '');
 
-watch(search, (value) => {
-    router.get(route('members.index'), { search: value }, {
+function applyFilters() {
+    const params = {};
+    if (search.value) params.search = search.value;
+    if (selectedCategory.value) params.category = selectedCategory.value;
+    router.get(route('members.index'), params, {
         preserveState: true,
         replace: true,
     });
-});
+}
+
+watch(search, () => applyFilters());
+
+function onCategoryChange() {
+    applyFilters();
+}
 
 function destroy(id) {
     if (confirm('Adakah anda pasti mahu memadam ahli ini?')) {
@@ -25,10 +35,9 @@ function destroy(id) {
 }
 
 const categoryLabels = {
-    anggota: 'Anggota',
-    ajk_cabang: 'AJK Cabang',
-    amk: 'AMK',
-    wanita: 'Wanita',
+    matc: 'MATC',
+    amk: 'MATCAMK',
+    wanita: 'MATCWC',
 };
 </script>
 
@@ -55,13 +64,36 @@ const categoryLabels = {
                     <p class="text-sm text-emerald-300">{{ page.props.flash.success }}</p>
                 </div>
 
-                <div class="mb-4">
-                    <input
-                        v-model="search"
-                        type="text"
-                        placeholder="Cari ahli..."
-                        class="w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 placeholder-sky-200/40 focus:ring-2 focus:ring-sky-400 sm:max-w-xs"
-                    />
+                <div class="mb-4 flex flex-wrap items-end gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-sky-100/80 mb-1">Cari</label>
+                        <input
+                            v-model="search"
+                            type="text"
+                            placeholder="Cari ahli..."
+                            class="w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 placeholder-sky-200/40 focus:ring-2 focus:ring-sky-400 sm:w-64"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-sky-100/80 mb-1">Kategori</label>
+                        <select
+                            v-model="selectedCategory"
+                            @change="onCategoryChange"
+                            class="w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 sm:w-48"
+                        >
+                            <option value="" class="bg-sky-900 text-white">Semua</option>
+                            <option value="matc" class="bg-sky-900 text-white">MATC</option>
+                            <option value="amk" class="bg-sky-900 text-white">MATCAMK</option>
+                            <option value="wanita" class="bg-sky-900 text-white">MATCWC</option>
+                        </select>
+                    </div>
+                    <a
+                        v-if="selectedCategory"
+                        :href="route('export.members.pdf', { category: selectedCategory })"
+                        class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-600/30 hover:bg-emerald-500"
+                    >
+                        Muat Turun PDF
+                    </a>
                 </div>
 
                 <div class="overflow-hidden rounded-2xl bg-white/10 shadow-lg backdrop-blur-md ring-1 ring-white/15">
@@ -72,6 +104,7 @@ const categoryLabels = {
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">No. IC</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Kategori</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Telefon</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Alamat</th>
                                 <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-sky-200/60">Tindakan</th>
                             </tr>
                         </thead>
@@ -89,6 +122,7 @@ const categoryLabels = {
                                     </span>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ member.phone_number }}</td>
+                                <td class="px-6 py-4 text-sm text-sky-200/50">{{ member.address || '-' }}</td>
                                 <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
                                     <template v-if="page.props.auth.user.is_admin">
                                         <Link :href="route('members.edit', member.id)" class="text-sky-300 hover:text-sky-200 mr-3">Ubah</Link>
@@ -97,7 +131,7 @@ const categoryLabels = {
                                 </td>
                             </tr>
                             <tr v-if="!members.data.length">
-                                <td colspan="5" class="px-6 py-4 text-center text-sm text-sky-200/50">Tiada ahli dijumpai.</td>
+                                <td colspan="6" class="px-6 py-4 text-center text-sm text-sky-200/50">Tiada ahli dijumpai.</td>
                             </tr>
                         </tbody>
                     </table>

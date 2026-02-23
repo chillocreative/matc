@@ -27,8 +27,12 @@ class MemberController extends Controller
         $this->authorize('viewAny', Member::class);
 
         return Inertia::render('Member/Index', [
-            'members' => $this->service->list($request->query('search'), 15),
-            'filters' => $request->only('search'),
+            'members' => $this->service->list(
+                $request->query('search'),
+                15,
+                $request->query('category'),
+            ),
+            'filters' => $request->only('search', 'category'),
         ]);
     }
 
