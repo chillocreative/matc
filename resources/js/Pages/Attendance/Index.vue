@@ -124,10 +124,10 @@ const statusColors = {
                             </thead>
                             <tbody class="divide-y divide-white/10">
                                 <tr v-for="attendance in attendances" :key="attendance.id" class="hover:bg-white/5">
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-white">{{ attendance.member?.name }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ attendance.member?.ic_number }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/80">{{ categoryLabels[attendance.member?.category_type] || '-' }}</td>
-                                    <td class="px-6 py-4 text-sm text-sky-200/80">{{ attendance.member?.address || '-' }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-white uppercase">{{ attendance.member?.name }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50 uppercase">{{ attendance.member?.ic_number }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/80 uppercase">{{ categoryLabels[attendance.member?.category_type] || '-' }}</td>
+                                    <td class="px-6 py-4 text-sm text-sky-200/80 uppercase">{{ attendance.member?.address || '-' }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">
                                         <span
                                             class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
