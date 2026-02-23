@@ -52,7 +52,6 @@ enum CategoryType: string
                 'Setiausaha',
                 'Setiausaha Pengelola',
                 'Ketua Penerangan',
-                'Pengarah Komunikasi',
                 'AJK',
             ],
             self::Amk => [

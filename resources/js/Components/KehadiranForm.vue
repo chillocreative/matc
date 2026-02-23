@@ -55,7 +55,6 @@ const positionOptions = computed(() => {
             'Setiausaha',
             'Setiausaha Pengelola',
             'Ketua Penerangan',
-            'Pengarah Komunikasi',
             'AJK',
         ],
         amk: [
