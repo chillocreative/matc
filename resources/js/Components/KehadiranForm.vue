@@ -37,6 +37,7 @@ const phone_number = ref('');
 const address = ref('');
 const position_type = ref('');
 const status = ref('hadir');
+const absence_reason = ref('');
 const website = ref('');
 
 const loading = ref(false);
@@ -163,6 +164,7 @@ async function submit() {
             address: address.value.trim() || null,
             position_type: position_type.value,
             status: status.value,
+            absence_reason: status.value === 'tidak_hadir' ? absence_reason.value.trim() || null : null,
             website: website.value,
             _ft: props.formToken,
         };
@@ -204,6 +206,7 @@ function resetForm() {
     address.value = '';
     position_type.value = '';
     status.value = 'hadir';
+    absence_reason.value = '';
     errors.value = {};
 }
 
@@ -370,6 +373,24 @@ function forceDigits(ref) {
                         <span class="text-sm font-medium" :class="dark ? 'text-white' : 'text-gray-800'">Tidak Hadir</span>
                     </label>
                 </div>
+            </div>
+
+            <!-- Sebab Tidak Hadir -->
+            <div v-if="status === 'tidak_hadir'">
+                <label for="absence_reason" class="block text-xs font-medium sm:text-sm" :class="dark ? 'text-sky-100/80' : 'text-gray-700'">Nyatakan Sebab Tidak Hadir</label>
+                <textarea
+                    id="absence_reason"
+                    v-model="absence_reason"
+                    rows="3"
+                    @input="clearFieldError('absence_reason')"
+                    class="mt-1 block w-full rounded-lg shadow-sm"
+                    :class="[
+                        dark
+                            ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 focus:ring-2 ' + (errors.absence_reason ? 'ring-red-400/50 focus:ring-red-400' : 'ring-white/15 focus:ring-sky-400')
+                            : (errors.absence_reason ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500')
+                    ]"
+                ></textarea>
+                <p v-if="errors.absence_reason" class="mt-1 text-xs sm:text-sm" :class="dark ? 'text-red-300' : 'text-red-600'">{{ errors.absence_reason }}</p>
             </div>
 
             <!-- Submit -->

@@ -133,6 +133,7 @@ class QrAttendanceController extends Controller
             'address' => ['nullable', 'string', 'max:500'],
             'position_type' => ['required', 'string', "in:{$allPositions}"],
             'status' => ['required', 'string', 'in:hadir,tidak_hadir'],
+            'absence_reason' => ['nullable', 'string', 'max:500', 'required_if:status,tidak_hadir'],
         ]);
 
         $icNumber = preg_replace('/[^0-9]/', '', $validated['ic_number']);
@@ -150,6 +151,7 @@ class QrAttendanceController extends Controller
                     'position_type' => $validated['position_type'] ?? null,
                 ],
                 $status,
+                $validated['absence_reason'] ?? null,
             );
 
             $this->bruteForce->clearAttempts($ip);

@@ -19,7 +19,9 @@ class Attendance extends Model
         'meeting_id',
         'member_id',
         'ic_number_hash',
+        'category_type',
         'status',
+        'absence_reason',
     ];
 
     protected function casts(): array
