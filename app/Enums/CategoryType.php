@@ -14,8 +14,8 @@ enum CategoryType: string
     {
         return match ($this) {
             self::Matc => 'MATC',
-            self::Amk => 'MATCAMK',
-            self::Wanita => 'MATCWC',
+            self::Amk => 'MATAMKC',
+            self::Wanita => 'MATWC',
         };
     }
 

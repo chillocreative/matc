@@ -36,8 +36,8 @@ function destroy(id) {
 
 const categoryLabels = {
     matc: 'MATC',
-    amk: 'MATCAMK',
-    wanita: 'MATCWC',
+    amk: 'MATAMKC',
+    wanita: 'MATWC',
 };
 </script>
 
@@ -83,8 +83,8 @@ const categoryLabels = {
                         >
                             <option value="" class="bg-sky-900 text-white">Semua</option>
                             <option value="matc" class="bg-sky-900 text-white">MATC</option>
-                            <option value="amk" class="bg-sky-900 text-white">MATCAMK</option>
-                            <option value="wanita" class="bg-sky-900 text-white">MATCWC</option>
+                            <option value="amk" class="bg-sky-900 text-white">MATAMKC</option>
+                            <option value="wanita" class="bg-sky-900 text-white">MATWC</option>
                         </select>
                     </div>
                     <a
