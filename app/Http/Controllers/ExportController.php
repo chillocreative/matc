@@ -43,14 +43,16 @@ class ExportController extends Controller
             'address' => $a->member?->address,
         ])->toArray();
 
+        $dateFormatted = $meeting->date->format('d-m-Y');
+
         $pdf = Pdf::loadView('pdf.attendance', [
             'meetingTitle' => $meeting->title,
-            'meetingDate' => $meeting->date,
+            'meetingDate' => $dateFormatted,
             'categoryLabel' => $categoryEnum->label(),
             'rows' => $rows,
         ])->setPaper('a4', 'landscape');
 
-        return $pdf->download("kehadiran-{$category}-{$meeting->date}.pdf");
+        return $pdf->download("kehadiran-{$category}-{$dateFormatted}.pdf");
     }
 
     public function membersPdf(Request $request): Response
