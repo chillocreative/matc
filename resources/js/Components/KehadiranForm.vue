@@ -131,6 +131,10 @@ function validateForm() {
         e.position_type = 'Sila pilih jenis jawatan.';
     }
 
+    if (status.value === 'tidak_hadir' && !absence_reason.value.trim()) {
+        e.absence_reason = 'Sila nyatakan sebab tidak hadir.';
+    }
+
     errors.value = e;
     return Object.keys(e).length === 0;
 }
