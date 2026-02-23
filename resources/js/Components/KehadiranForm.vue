@@ -36,7 +36,6 @@ const ic_number = ref('');
 const phone_number = ref('');
 const address = ref('');
 const position_type = ref('');
-const position_name = ref('');
 const website = ref('');
 
 const loading = ref(false);
@@ -46,14 +45,41 @@ const errorMessage = ref('');
 
 const recaptchaReady = ref(false);
 
-const isAnggota = computed(() => props.category === 'anggota');
-const isAjkCabang = computed(() => props.category === 'ajk_cabang');
-const isAjk = computed(() => position_type.value === 'Ahli Jawatankuasa');
+const positionOptions = computed(() => {
+    const positions = {
+        matc: [
+            'Anggota Biasa',
+            'Ketua Cabang',
+            'Timbalan Ketua Cabang',
+            'Naib Ketua Cabang',
+            'Setiausaha',
+            'Setiausaha Pengelola',
+            'Ketua Penerangan',
+            'Pengarah Komunikasi',
+            'AJK',
+        ],
+        amk: [
+            'Anggota Biasa',
+            'Ketua AMK',
+            'Timbalan Ketua AMK',
+            'Naib Ketua AMK',
+            'Setiausaha',
+            'Ketua Penerangan',
+            'AJK',
+        ],
+        wanita: [
+            'Anggota Biasa',
+            'Ketua Wanita',
+            'Timbalan Ketua Wanita',
+            'Naib Ketua Wanita',
+            'Setiausaha',
+            'Ketua Penerangan',
+            'AJK',
+        ],
+    };
 
-const positionOptions = [
-    { value: 'Anggota Biasa', label: 'Anggota Biasa' },
-    { value: 'Ahli Jawatankuasa', label: 'Ahli Jawatankuasa' },
-];
+    return (positions[props.category] || []).map(p => ({ value: p, label: p }));
+});
 
 onMounted(() => {
     if (props.recaptchaSiteKey) {
@@ -97,16 +123,8 @@ function validateForm() {
         e.ic_number = 'Format No. IC tidak sah.';
     }
 
-    if (!isAnggota.value && !isAjkCabang.value && !position_type.value) {
+    if (!position_type.value) {
         e.position_type = 'Sila pilih jenis jawatan.';
-    }
-
-    if (isAjkCabang.value && !position_name.value.trim()) {
-        e.position_name = 'Jawatan wajib diisi.';
-    }
-
-    if (isAjk.value && !position_name.value.trim()) {
-        e.position_name = 'Nama jawatan wajib diisi.';
     }
 
     errors.value = e;
@@ -140,8 +158,7 @@ async function submit() {
             ic_number: ic_number.value.replace(/\D/g, ''),
             phone_number: phone_number.value.trim() || null,
             address: address.value.trim() || null,
-            position_type: (isAnggota.value || isAjkCabang.value) ? null : position_type.value,
-            position_name: (isAjkCabang.value || isAjk.value) ? position_name.value.trim() : null,
+            position_type: position_type.value,
             website: website.value,
             _ft: props.formToken,
         };
@@ -182,7 +199,6 @@ function resetForm() {
     phone_number.value = '';
     address.value = '';
     position_type.value = '';
-    position_name.value = '';
     errors.value = {};
 }
 
@@ -304,32 +320,13 @@ function forceDigits(ref) {
                 ></textarea>
             </div>
 
-            <!-- Jawatan (AJK Cabang sahaja) -->
-            <div v-if="isAjkCabang">
-                <label for="position_name" class="block text-xs font-medium sm:text-sm" :class="dark ? 'text-sky-100/80' : 'text-gray-700'">Jawatan</label>
-                <input
-                    id="position_name"
-                    v-model="position_name"
-                    type="text"
-                    placeholder="Cth: PENGERUSI, SETIAUSAHA, BENDAHARI"
-                    @input="forceUppercase(position_name); clearFieldError('position_name')"
-                    class="mt-1 block w-full rounded-lg shadow-sm text-base sm:text-lg uppercase"
-                    :class="[
-                        dark
-                            ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 focus:ring-2 ' + (errors.position_name ? 'ring-red-400/50 focus:ring-red-400' : 'ring-white/15 focus:ring-sky-400')
-                            : (errors.position_name ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500')
-                    ]"
-                />
-                <p v-if="errors.position_name" class="mt-1 text-xs sm:text-sm" :class="dark ? 'text-red-300' : 'text-red-600'">{{ errors.position_name }}</p>
-            </div>
-
-            <!-- Jenis Jawatan (bukan anggota & bukan AJK Cabang) -->
-            <div v-if="!isAnggota && !isAjkCabang">
+            <!-- Jenis Jawatan -->
+            <div>
                 <label for="position_type" class="block text-xs font-medium sm:text-sm" :class="dark ? 'text-sky-100/80' : 'text-gray-700'">Jenis Jawatan</label>
                 <select
                     id="position_type"
                     v-model="position_type"
-                    @change="clearFieldError('position_type'); position_name = '';"
+                    @change="clearFieldError('position_type')"
                     class="mt-1 block w-full rounded-lg shadow-sm"
                     :class="[
                         dark
@@ -343,25 +340,6 @@ function forceDigits(ref) {
                     </option>
                 </select>
                 <p v-if="errors.position_type" class="mt-1 text-xs sm:text-sm" :class="dark ? 'text-red-300' : 'text-red-600'">{{ errors.position_type }}</p>
-            </div>
-
-            <!-- Nama Jawatan (Ahli Jawatankuasa sahaja) -->
-            <div v-if="isAjk">
-                <label for="position_name" class="block text-xs font-medium sm:text-sm" :class="dark ? 'text-sky-100/80' : 'text-gray-700'">Nama Jawatan</label>
-                <input
-                    id="position_name"
-                    v-model="position_name"
-                    type="text"
-                    placeholder="Cth: SETIAUSAHA, BENDAHARI"
-                    @input="forceUppercase(position_name); clearFieldError('position_name')"
-                    class="mt-1 block w-full rounded-lg shadow-sm uppercase"
-                    :class="[
-                        dark
-                            ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 focus:ring-2 ' + (errors.position_name ? 'ring-red-400/50 focus:ring-red-400' : 'ring-white/15 focus:ring-sky-400')
-                            : (errors.position_name ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500')
-                    ]"
-                />
-                <p v-if="errors.position_name" class="mt-1 text-xs sm:text-sm" :class="dark ? 'text-red-300' : 'text-red-600'">{{ errors.position_name }}</p>
             </div>
 
             <!-- Submit -->

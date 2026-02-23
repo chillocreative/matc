@@ -22,8 +22,7 @@ class DashboardController extends Controller
     {
         return Inertia::render('Dashboard', [
             'stats' => [
-                'anggota' => $this->countByCategory(CategoryType::Anggota),
-                'ajk_cabang' => $this->countByCategory(CategoryType::AjkCabang),
+                'matc' => $this->countByCategory(CategoryType::Matc),
                 'amk' => $this->countByCategory(CategoryType::Amk),
                 'wanita' => $this->countByCategory(CategoryType::Wanita),
             ],

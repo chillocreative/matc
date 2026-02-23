@@ -43,22 +43,19 @@ Route::middleware('auth')->group(function () {
         ->name('attendances.verify');
 
     // QR code display pages (admin)
-    Route::get('/qr/anggota', [QrAttendanceController::class, 'show'])->defaults('category', 'anggota')->name('admin.qr.anggota');
-    Route::get('/qr/ajk-cabang', [QrAttendanceController::class, 'show'])->defaults('category', 'ajk-cabang')->name('admin.qr.ajk-cabang');
+    Route::get('/qr/matc', [QrAttendanceController::class, 'show'])->defaults('category', 'matc')->name('admin.qr.matc');
     Route::get('/qr/amk', [QrAttendanceController::class, 'show'])->defaults('category', 'amk')->name('admin.qr.amk');
     Route::get('/qr/wanita', [QrAttendanceController::class, 'show'])->defaults('category', 'wanita')->name('admin.qr.wanita');
 });
 
 // Public category attendance form pages
-Route::get('/anggota', [QrAttendanceController::class, 'publicForm'])->defaults('category', 'anggota')->name('qr.anggota');
-Route::get('/ajk-cabang', [QrAttendanceController::class, 'publicForm'])->defaults('category', 'ajk-cabang')->name('qr.ajk-cabang');
-Route::get('/wanita', [QrAttendanceController::class, 'publicForm'])->defaults('category', 'wanita')->name('qr.wanita');
+Route::get('/matc', [QrAttendanceController::class, 'publicForm'])->defaults('category', 'matc')->name('qr.matc');
 Route::get('/amk', [QrAttendanceController::class, 'publicForm'])->defaults('category', 'amk')->name('qr.amk');
+Route::get('/wanita', [QrAttendanceController::class, 'publicForm'])->defaults('category', 'wanita')->name('qr.wanita');
 
-Route::post('/anggota', [QrAttendanceController::class, 'publicVerify'])->defaults('category', 'anggota')->name('qr.anggota.verify')->middleware(['throttle:verify-attendance', 'honeypot']);
-Route::post('/ajk-cabang', [QrAttendanceController::class, 'publicVerify'])->defaults('category', 'ajk-cabang')->name('qr.ajk-cabang.verify')->middleware(['throttle:verify-attendance', 'honeypot']);
-Route::post('/wanita', [QrAttendanceController::class, 'publicVerify'])->defaults('category', 'wanita')->name('qr.wanita.verify')->middleware(['throttle:verify-attendance', 'honeypot']);
+Route::post('/matc', [QrAttendanceController::class, 'publicVerify'])->defaults('category', 'matc')->name('qr.matc.verify')->middleware(['throttle:verify-attendance', 'honeypot']);
 Route::post('/amk', [QrAttendanceController::class, 'publicVerify'])->defaults('category', 'amk')->name('qr.amk.verify')->middleware(['throttle:verify-attendance', 'honeypot']);
+Route::post('/wanita', [QrAttendanceController::class, 'publicVerify'])->defaults('category', 'wanita')->name('qr.wanita.verify')->middleware(['throttle:verify-attendance', 'honeypot']);
 
 // Admin panel
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

@@ -13,13 +13,12 @@ const props = defineProps({
 });
 
 const categoryColors = {
-    anggota: { badge: 'bg-sky-400/15 text-sky-300 ring-sky-400/20' },
-    ajk_cabang: { badge: 'bg-amber-400/15 text-amber-300 ring-amber-400/20' },
+    matc: { badge: 'bg-sky-400/15 text-sky-300 ring-sky-400/20' },
     wanita: { badge: 'bg-rose-400/15 text-rose-300 ring-rose-400/20' },
     amk: { badge: 'bg-emerald-400/15 text-emerald-300 ring-emerald-400/20' },
 };
 
-const colors = categoryColors[props.category] || categoryColors.anggota;
+const colors = categoryColors[props.category] || categoryColors.matc;
 
 function onVerified() {
     router.reload({ only: ['attendances'] });

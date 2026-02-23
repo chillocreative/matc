@@ -57,7 +57,7 @@ class AttendanceService
     }
 
     /**
-     * @param  array{name: string, phone_number: ?string, address: ?string, position_type: ?string, position_name: ?string}  $memberData
+     * @param  array{name: string, phone_number: ?string, address: ?string, position_type: ?string}  $memberData
      */
     public function publicVerifyByIc(int $meetingId, string $icNumber, CategoryType $category, array $memberData = []): Attendance
     {
@@ -87,7 +87,6 @@ class AttendanceService
                     'phone_number' => $memberData['phone_number'] ?? null,
                     'address' => $memberData['address'] ?? null,
                     'position_type' => $memberData['position_type'] ?? null,
-                    'position_name' => $memberData['position_name'] ?? null,
                 ]);
             }
 

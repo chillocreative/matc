@@ -123,13 +123,14 @@ class QrAttendanceController extends Controller
             return $recaptchaError;
         }
 
+        $allPositions = implode(',', CategoryType::allPositions());
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'ic_number' => ['required', 'string', 'max:20', new MalaysianIc],
             'phone_number' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:500'],
-            'position_type' => ['nullable', 'string', 'in:Anggota Biasa,Ahli Jawatankuasa'],
-            'position_name' => ['nullable', 'required_if:position_type,Ahli Jawatankuasa', 'string', 'max:255'],
+            'position_type' => ['required', 'string', "in:{$allPositions}"],
         ]);
 
         $icNumber = preg_replace('/[^0-9]/', '', $validated['ic_number']);
@@ -144,7 +145,6 @@ class QrAttendanceController extends Controller
                     'phone_number' => $validated['phone_number'] ?? null,
                     'address' => $validated['address'] ?? null,
                     'position_type' => $validated['position_type'] ?? null,
-                    'position_name' => $validated['position_name'] ?? null,
                 ],
             );
 
