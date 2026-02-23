@@ -39,8 +39,12 @@ const statCards = [
                             </div>
                             <span class="text-xs font-medium text-sky-200/60 sm:text-sm">{{ card.label }}</span>
                         </div>
-                        <div class="mt-3 text-2xl font-bold text-white sm:text-3xl">
-                            {{ stats[card.key] }}
+                        <div class="mt-3">
+                            <span class="text-2xl font-bold text-white sm:text-3xl">{{ stats[card.key].hadir }}</span>
+                            <span class="ml-1 text-sm text-emerald-300">Hadir</span>
+                            <span class="mx-2 text-white/30">|</span>
+                            <span class="text-2xl font-bold text-white sm:text-3xl">{{ stats[card.key].tidak_hadir }}</span>
+                            <span class="ml-1 text-sm text-red-300">Tidak Hadir</span>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\AttendanceStatus;
 use App\Enums\CategoryType;
 use App\Models\Meeting;
 use App\Rules\MalaysianIc;
@@ -131,9 +132,11 @@ class QrAttendanceController extends Controller
             'phone_number' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:500'],
             'position_type' => ['required', 'string', "in:{$allPositions}"],
+            'status' => ['required', 'string', 'in:hadir,tidak_hadir'],
         ]);
 
         $icNumber = preg_replace('/[^0-9]/', '', $validated['ic_number']);
+        $status = $validated['status'] === 'hadir' ? AttendanceStatus::Present : AttendanceStatus::Absent;
 
         try {
             $attendance = $this->attendanceService->publicVerifyByIc(
@@ -146,6 +149,7 @@ class QrAttendanceController extends Controller
                     'address' => $validated['address'] ?? null,
                     'position_type' => $validated['position_type'] ?? null,
                 ],
+                $status,
             );
 
             $this->bruteForce->clearAttempts($ip);

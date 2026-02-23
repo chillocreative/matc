@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\AttendanceStatus;
 use App\Enums\CategoryType;
 use App\Models\Attendance;
 use App\Models\Meeting;
@@ -30,8 +31,13 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function countByCategory(CategoryType $category): int
+    private function countByCategory(CategoryType $category): array
     {
-        return Attendance::whereHas('member', fn ($q) => $q->where('category_type', $category->value))->count();
+        $base = Attendance::whereHas('member', fn ($q) => $q->where('category_type', $category->value));
+
+        return [
+            'hadir' => (clone $base)->where('status', AttendanceStatus::Present->value)->count(),
+            'tidak_hadir' => (clone $base)->where('status', AttendanceStatus::Absent->value)->count(),
+        ];
     }
 }

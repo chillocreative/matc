@@ -36,6 +36,7 @@ const ic_number = ref('');
 const phone_number = ref('');
 const address = ref('');
 const position_type = ref('');
+const status = ref('hadir');
 const website = ref('');
 
 const loading = ref(false);
@@ -158,6 +159,7 @@ async function submit() {
             phone_number: phone_number.value.trim() || null,
             address: address.value.trim() || null,
             position_type: position_type.value,
+            status: status.value,
             website: website.value,
             _ft: props.formToken,
         };
@@ -198,6 +200,7 @@ function resetForm() {
     phone_number.value = '';
     address.value = '';
     position_type.value = '';
+    status.value = 'hadir';
     errors.value = {};
 }
 
@@ -341,6 +344,31 @@ function forceDigits(ref) {
                 <p v-if="errors.position_type" class="mt-1 text-xs sm:text-sm" :class="dark ? 'text-red-300' : 'text-red-600'">{{ errors.position_type }}</p>
             </div>
 
+            <!-- Status -->
+            <div>
+                <label class="block text-xs font-medium sm:text-sm mb-2" :class="dark ? 'text-sky-100/80' : 'text-gray-700'">Status Kehadiran</label>
+                <div class="flex gap-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input
+                            type="radio"
+                            v-model="status"
+                            value="hadir"
+                            class="h-4 w-4 text-emerald-500 focus:ring-emerald-400"
+                        />
+                        <span class="text-sm font-medium" :class="dark ? 'text-white' : 'text-gray-800'">Hadir</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input
+                            type="radio"
+                            v-model="status"
+                            value="tidak_hadir"
+                            class="h-4 w-4 text-red-500 focus:ring-red-400"
+                        />
+                        <span class="text-sm font-medium" :class="dark ? 'text-white' : 'text-gray-800'">Tidak Hadir</span>
+                    </label>
+                </div>
+            </div>
+
             <!-- Submit -->
             <button
                 type="submit"
@@ -354,9 +382,9 @@ function forceDigits(ref) {
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>
-                    Mengesahkan...
+                    Menghantar...
                 </span>
-                <span v-else>Sahkan Kehadiran</span>
+                <span v-else>Hantar</span>
             </button>
         </form>
     </div>
