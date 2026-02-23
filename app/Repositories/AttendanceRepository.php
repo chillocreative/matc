@@ -43,6 +43,15 @@ class AttendanceRepository
             ->exists();
     }
 
+    public function existsForMeetingIcAndCategory(int $meetingId, string $icHash, string $category): bool
+    {
+        return $this->model
+            ->where('meeting_id', $meetingId)
+            ->where('ic_number_hash', $icHash)
+            ->where('category_type', $category)
+            ->exists();
+    }
+
     public function upsertForMeetingAndMember(int $meetingId, int $memberId, array $data): Attendance
     {
         return $this->model->updateOrCreate(

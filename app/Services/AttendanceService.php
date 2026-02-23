@@ -72,10 +72,6 @@ class AttendanceService
             $member = $this->memberRepository->findByIcHashForUpdateOrNull($icHash);
 
             if ($member) {
-                if ($member->category_type !== $category) {
-                    throw new \DomainException('Kategori ahli tidak sepadan.');
-                }
-
                 $updateData = array_filter([
                     'phone_number' => $memberData['phone_number'] ?? null,
                     'address' => $memberData['address'] ?? null,
@@ -95,14 +91,15 @@ class AttendanceService
                 ]);
             }
 
-            if ($this->repository->existsForMeetingAndIcHash($meetingId, $icHash)) {
-                throw new \DomainException('IC ini sudah membuat pengesahan untuk mesyuarat ini.');
+            if ($this->repository->existsForMeetingIcAndCategory($meetingId, $icHash, $category->value)) {
+                throw new \DomainException('IC ini sudah membuat pengesahan untuk mesyuarat ini bagi kategori ini.');
             }
 
             return $this->repository->createRecord([
                 'meeting_id' => $meetingId,
                 'member_id' => $member->id,
                 'ic_number_hash' => $icHash,
+                'category_type' => $category->value,
                 'status' => $status->value,
             ]);
         });
