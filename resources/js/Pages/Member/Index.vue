@@ -110,19 +110,19 @@ const categoryLabels = {
                         </thead>
                         <tbody class="divide-y divide-white/10">
                             <tr v-for="member in members.data" :key="member.id" class="hover:bg-white/5">
-                                <td class="whitespace-nowrap px-6 py-4">
+                                <td class="whitespace-nowrap px-6 py-4 uppercase">
                                     <Link :href="route('members.show', member.id)" class="text-sky-300 hover:text-sky-200">
                                         {{ member.name }}
                                     </Link>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ member.ic_number }}</td>
+                                <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50 uppercase">{{ member.ic_number }}</td>
                                 <td class="whitespace-nowrap px-6 py-4">
-                                    <span class="inline-flex items-center rounded-full bg-sky-400/15 px-2.5 py-0.5 text-xs font-medium text-sky-300 ring-1 ring-sky-400/20">
+                                    <span class="inline-flex items-center rounded-full bg-sky-400/15 px-2.5 py-0.5 text-xs font-medium text-sky-300 ring-1 ring-sky-400/20 uppercase">
                                         {{ categoryLabels[member.category_type] || member.category_type }}
                                     </span>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ member.phone_number }}</td>
-                                <td class="px-6 py-4 text-sm text-sky-200/50">{{ member.address || '-' }}</td>
+                                <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50 uppercase">{{ member.phone_number }}</td>
+                                <td class="px-6 py-4 text-sm text-sky-200/50 uppercase">{{ member.address || '-' }}</td>
                                 <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
                                     <template v-if="page.props.auth.user.is_admin">
                                         <Link :href="route('members.edit', member.id)" class="text-sky-300 hover:text-sky-200 mr-3">Ubah</Link>
