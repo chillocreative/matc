@@ -12,13 +12,33 @@ const props = defineProps({
 
 const page = usePage();
 const selectedMeeting = ref(props.filters.meeting_id || '');
+const selectedCategory = ref(props.filters.category || '');
 
-function onMeetingChange() {
-    router.get(route('attendances.index'), { meeting_id: selectedMeeting.value }, {
+function applyFilters() {
+    const params = { meeting_id: selectedMeeting.value };
+    if (selectedCategory.value) {
+        params.category = selectedCategory.value;
+    }
+    router.get(route('attendances.index'), params, {
         preserveState: true,
         replace: true,
     });
 }
+
+function onMeetingChange() {
+    selectedCategory.value = '';
+    applyFilters();
+}
+
+function onCategoryChange() {
+    applyFilters();
+}
+
+const categoryLabels = {
+    matc: 'MATC',
+    amk: 'MATCAMK',
+    wanita: 'MATCWC',
+};
 
 const statusColors = {
     present: 'bg-emerald-400/15 text-emerald-300 ring-1 ring-emerald-400/20',
@@ -56,6 +76,20 @@ const statusColors = {
                     </select>
                 </div>
 
+                <div v-if="selectedMeeting" class="mb-4">
+                    <label class="block text-sm font-medium text-sky-100/80 mb-1">Kategori</label>
+                    <select
+                        v-model="selectedCategory"
+                        @change="onCategoryChange"
+                        class="w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 sm:max-w-md"
+                    >
+                        <option value="" class="bg-sky-900 text-white">Semua</option>
+                        <option value="matc" class="bg-sky-900 text-white">MATC</option>
+                        <option value="amk" class="bg-sky-900 text-white">MATCAMK</option>
+                        <option value="wanita" class="bg-sky-900 text-white">MATCWC</option>
+                    </select>
+                </div>
+
                 <div v-if="meeting" class="overflow-hidden rounded-2xl bg-white/10 shadow-lg backdrop-blur-md ring-1 ring-white/15">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
@@ -74,6 +108,8 @@ const statusColors = {
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Nama Ahli</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">No. IC</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Kategori</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Alamat</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Status</th>
                                 </tr>
                             </thead>
@@ -81,6 +117,8 @@ const statusColors = {
                                 <tr v-for="attendance in attendances" :key="attendance.id" class="hover:bg-white/5">
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-white">{{ attendance.member?.name }}</td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ attendance.member?.ic_number }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/80">{{ categoryLabels[attendance.member?.category_type] || '-' }}</td>
+                                    <td class="px-6 py-4 text-sm text-sky-200/80">{{ attendance.member?.address || '-' }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">
                                         <span
                                             class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"

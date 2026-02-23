@@ -22,6 +22,19 @@ class AttendanceRepository
             ->get();
     }
 
+    public function getByMeetingFiltered(int $meetingId, ?string $category): Collection
+    {
+        return $this->model
+            ->where('meeting_id', $meetingId)
+            ->with('member')
+            ->when($category, fn ($query) => $query->whereHas(
+                'member',
+                fn ($q) => $q->where('category_type', $category),
+            ))
+            ->latest('created_at')
+            ->get();
+    }
+
     public function existsForMeetingAndIcHash(int $meetingId, string $icHash): bool
     {
         return $this->model

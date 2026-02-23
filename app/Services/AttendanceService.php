@@ -27,6 +27,11 @@ class AttendanceService
         return $this->repository->getByMeeting($meetingId);
     }
 
+    public function getByMeetingFiltered(int $meetingId, ?string $category): Collection
+    {
+        return $this->repository->getByMeetingFiltered($meetingId, $category);
+    }
+
     public function markAttendance(int $meetingId, array $attendances): void
     {
         DB::transaction(function () use ($meetingId, $attendances): void {
