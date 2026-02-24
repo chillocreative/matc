@@ -255,17 +255,17 @@ watch(phone_number, (val) => {
             <p v-if="submittedName" class="mt-1 text-xs sm:text-sm" :class="dark ? 'text-sky-200/50' : 'text-gray-500'">
                 Nama: <span class="font-semibold" :class="dark ? 'text-white' : 'text-gray-800'">{{ submittedName }}</span>
             </p>
-            <button
-                @click="submitted = false"
+            <a
+                href="/"
                 :class="dark
                     ? 'mt-6 inline-flex items-center gap-2 rounded-xl bg-sky-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:bg-sky-400'
                     : 'mt-6 inline-flex items-center gap-2 rounded-md bg-green-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-green-500'"
             >
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                 </svg>
-                Daftar Lagi
-            </button>
+                Laman Utama
+            </a>
         </div>
 
         <!-- Form -->
