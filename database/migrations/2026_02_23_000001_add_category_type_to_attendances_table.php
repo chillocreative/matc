@@ -10,9 +10,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('attendances', function (Blueprint $table) {
-            $table->string('category_type')->after('ic_number_hash');
+        if (! Schema::hasColumn('attendances', 'category_type')) {
+            Schema::table('attendances', function (Blueprint $table) {
+                $table->string('category_type')->after('ic_number_hash');
+            });
+        }
 
+        Schema::table('attendances', function (Blueprint $table) {
             $table->dropUnique('attendance_ic_lock');
 
             $table->dropForeign(['member_id']);
