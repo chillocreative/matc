@@ -24,15 +24,13 @@ return new class extends Migration
         }
 
         if ($this->indexExists('attendance_member_lock')) {
-            Schema::table('attendances', function (Blueprint $table) {
-                $table->dropForeign(['member_id']);
-            });
+            $this->dropAllForeignKeysOnColumn('attendances', 'member_id');
             Schema::table('attendances', function (Blueprint $table) {
                 $table->dropUnique('attendance_member_lock');
             });
         }
 
-        if (! $this->foreignKeyExists('attendances_member_id_foreign')) {
+        if (! $this->hasForeignKeyOnColumn('attendances', 'member_id')) {
             Schema::table('attendances', function (Blueprint $table) {
                 $table->foreign('member_id')->references('id')->on('members')->cascadeOnDelete();
             });
@@ -68,15 +66,31 @@ return new class extends Migration
             ->exists();
     }
 
-    private function foreignKeyExists(string $keyName): bool
+    private function dropAllForeignKeysOnColumn(string $table, string $column): void
     {
         $database = DB::getDatabaseName();
 
-        return DB::table('information_schema.table_constraints')
+        $fks = DB::table('information_schema.key_column_usage')
             ->where('table_schema', $database)
-            ->where('table_name', 'attendances')
-            ->where('constraint_name', $keyName)
-            ->where('constraint_type', 'FOREIGN KEY')
+            ->where('table_name', $table)
+            ->where('column_name', $column)
+            ->whereNotNull('referenced_table_name')
+            ->pluck('constraint_name');
+
+        foreach ($fks as $fk) {
+            DB::statement("ALTER TABLE `{$table}` DROP FOREIGN KEY `{$fk}`");
+        }
+    }
+
+    private function hasForeignKeyOnColumn(string $table, string $column): bool
+    {
+        $database = DB::getDatabaseName();
+
+        return DB::table('information_schema.key_column_usage')
+            ->where('table_schema', $database)
+            ->where('table_name', $table)
+            ->where('column_name', $column)
+            ->whereNotNull('referenced_table_name')
             ->exists();
     }
 };
