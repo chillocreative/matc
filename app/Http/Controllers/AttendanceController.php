@@ -86,6 +86,30 @@ class AttendanceController extends Controller
             ->with('success', 'Kehadiran berjaya direkod.');
     }
 
+    public function update(Request $request, Attendance $attendance): RedirectResponse
+    {
+        $this->authorize('update', $attendance);
+
+        $validated = $request->validate([
+            'status' => ['required', 'string', 'in:present,absent,late,excused'],
+            'absence_reason' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $attendance->update($validated);
+
+        return redirect()->back()->with('success', 'Rekod kehadiran berjaya dikemaskini.');
+    }
+
+    public function destroy(Attendance $attendance): RedirectResponse
+    {
+        $this->authorize('delete', $attendance);
+
+        $meetingId = $attendance->meeting_id;
+        $attendance->delete();
+
+        return redirect()->back()->with('success', 'Rekod kehadiran berjaya dipadam.');
+    }
+
     public function verify(VerifyAttendanceRequest $request): RedirectResponse
     {
         $validated = $request->validated();

@@ -39,6 +39,9 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:form-submit')
         ->name('attendances.store');
 
+    Route::put('/attendances/{attendance}', [AttendanceController::class, 'update'])->name('attendances.update');
+    Route::delete('/attendances/{attendance}', [AttendanceController::class, 'destroy'])->name('attendances.destroy');
+
     Route::post('/attendances/verify', [AttendanceController::class, 'verify'])
         ->middleware('throttle:verify-attendance')
         ->name('attendances.verify');

@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 
 const props = defineProps({
     meetings: Object,
@@ -46,6 +46,48 @@ const statusColors = {
     late: 'bg-yellow-400/15 text-yellow-300 ring-1 ring-yellow-400/20',
     excused: 'bg-white/10 text-sky-200 ring-1 ring-white/15',
 };
+
+// Edit modal
+const showEditModal = ref(false);
+const editForm = ref({ id: null, status: '', absence_reason: '' });
+const editErrors = ref({});
+
+function openEdit(attendance) {
+    editForm.value = {
+        id: attendance.id,
+        status: attendance.status,
+        absence_reason: attendance.absence_reason || '',
+    };
+    editErrors.value = {};
+    showEditModal.value = true;
+}
+
+function saveEdit() {
+    router.put(route('attendances.update', editForm.value.id), {
+        status: editForm.value.status,
+        absence_reason: editForm.value.absence_reason,
+    }, {
+        preserveState: true,
+        onSuccess: () => { showEditModal.value = false; },
+        onError: (errors) => { editErrors.value = errors; },
+    });
+}
+
+// Delete
+const showDeleteModal = ref(false);
+const deleteTarget = ref(null);
+
+function confirmDelete(attendance) {
+    deleteTarget.value = attendance;
+    showDeleteModal.value = true;
+}
+
+function executeDelete() {
+    router.delete(route('attendances.destroy', deleteTarget.value.id), {
+        preserveState: true,
+        onSuccess: () => { showDeleteModal.value = false; },
+    });
+}
 </script>
 
 <template>
@@ -120,6 +162,8 @@ const statusColors = {
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Kategori</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Alamat</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Sebab</th>
+                                    <th v-if="page.props.auth.user.is_admin" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Tindakan</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/10">
@@ -136,6 +180,23 @@ const statusColors = {
                                             {{ attendance.status }}
                                         </span>
                                     </td>
+                                    <td class="px-6 py-4 text-sm text-sky-200/80 uppercase">{{ attendance.absence_reason || '-' }}</td>
+                                    <td v-if="page.props.auth.user.is_admin" class="whitespace-nowrap px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <button
+                                                @click="openEdit(attendance)"
+                                                class="text-sky-400 hover:text-sky-300 text-xs font-medium"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                @click="confirmDelete(attendance)"
+                                                class="text-red-400 hover:text-red-300 text-xs font-medium"
+                                            >
+                                                Padam
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -147,6 +208,52 @@ const statusColors = {
                     <div class="p-6 text-center text-sm text-sky-200/50">
                         Sila pilih mesyuarat untuk melihat rekod kehadiran.
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- Edit Modal -->
+        <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" @click.self="showEditModal = false">
+            <div class="w-full max-w-md rounded-2xl bg-sky-950 p-6 ring-1 ring-white/15 shadow-2xl">
+                <h3 class="text-lg font-semibold text-white mb-4">Edit Kehadiran</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-sky-100/80 mb-1">Status</label>
+                        <select
+                            v-model="editForm.status"
+                            class="w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400"
+                        >
+                            <option value="present" class="bg-sky-900 text-white">Present</option>
+                            <option value="absent" class="bg-sky-900 text-white">Absent</option>
+                            <option value="late" class="bg-sky-900 text-white">Late</option>
+                            <option value="excused" class="bg-sky-900 text-white">Excused</option>
+                        </select>
+                        <p v-if="editErrors.status" class="mt-1 text-xs text-red-300">{{ editErrors.status }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-sky-100/80 mb-1">Sebab Tidak Hadir</label>
+                        <textarea
+                            v-model="editForm.absence_reason"
+                            rows="3"
+                            class="w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400"
+                        ></textarea>
+                        <p v-if="editErrors.absence_reason" class="mt-1 text-xs text-red-300">{{ editErrors.absence_reason }}</p>
+                    </div>
+                    <div class="flex justify-end gap-3">
+                        <button @click="showEditModal = false" class="rounded-md px-3 py-2 text-sm font-medium text-sky-200 hover:text-white">Batal</button>
+                        <button @click="saveEdit" class="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 hover:bg-sky-400">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" @click.self="showDeleteModal = false">
+            <div class="w-full max-w-sm rounded-2xl bg-sky-950 p-6 ring-1 ring-white/15 shadow-2xl">
+                <h3 class="text-lg font-semibold text-white mb-2">Padam Rekod</h3>
+                <p class="text-sm text-sky-200/70 mb-4">Adakah anda pasti ingin memadam rekod kehadiran <strong class="text-white">{{ deleteTarget?.member?.name }}</strong>?</p>
+                <div class="flex justify-end gap-3">
+                    <button @click="showDeleteModal = false" class="rounded-md px-3 py-2 text-sm font-medium text-sky-200 hover:text-white">Batal</button>
+                    <button @click="executeDelete" class="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-red-600/30 hover:bg-red-500">Padam</button>
                 </div>
             </div>
         </div>
