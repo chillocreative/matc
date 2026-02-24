@@ -14,7 +14,10 @@ return new class extends Migration
             $table->string('category_type')->after('ic_number_hash');
 
             $table->dropUnique('attendance_ic_lock');
+
+            $table->dropForeign(['member_id']);
             $table->dropUnique('attendance_member_lock');
+            $table->foreign('member_id')->references('id')->on('members')->cascadeOnDelete();
 
             $table->unique(['meeting_id', 'ic_number_hash', 'category_type'], 'attendance_category_lock');
         });
