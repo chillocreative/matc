@@ -221,12 +221,18 @@ function clearFieldError(field) {
     }
 }
 
-function forceUppercase(ref) {
-    ref.value = ref.value.toUpperCase();
+function forceUppercase(event) {
+    const input = event.target;
+    const start = input.selectionStart;
+    input.value = input.value.toUpperCase();
+    input.selectionStart = input.selectionEnd = start;
 }
 
-function forceDigits(ref) {
-    ref.value = ref.value.replace(/\D/g, '');
+function forceDigits(event) {
+    const input = event.target;
+    const start = input.selectionStart;
+    input.value = input.value.replace(/\D/g, '');
+    input.selectionStart = input.selectionEnd = start;
 }
 </script>
 
@@ -271,7 +277,7 @@ function forceDigits(ref) {
                     v-model="name"
                     type="text"
                     autocomplete="name"
-                    @input="forceUppercase(name); clearFieldError('name')"
+                    @input="forceUppercase($event); name = $event.target.value; clearFieldError('name')"
                     class="mt-1 block w-full rounded-lg shadow-sm text-base sm:text-lg uppercase"
                     :class="[
                         dark
@@ -313,7 +319,7 @@ function forceDigits(ref) {
                     inputmode="numeric"
                     placeholder="0121234567"
                     autocomplete="tel"
-                    @input="forceDigits(phone_number)"
+                    @input="forceDigits($event); phone_number = $event.target.value"
                     class="mt-1 block w-full rounded-lg shadow-sm"
                     :class="dark ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
                 />
@@ -326,7 +332,7 @@ function forceDigits(ref) {
                     id="address"
                     v-model="address"
                     rows="2"
-                    @input="forceUppercase(address)"
+                    @input="forceUppercase($event); address = $event.target.value"
                     class="mt-1 block w-full rounded-lg shadow-sm uppercase"
                     :class="dark ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
                 ></textarea>
