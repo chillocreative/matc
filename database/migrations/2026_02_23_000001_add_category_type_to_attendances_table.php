@@ -26,6 +26,8 @@ return new class extends Migration
         if ($this->indexExists('attendance_member_lock')) {
             Schema::table('attendances', function (Blueprint $table) {
                 $table->dropForeign(['member_id']);
+            });
+            Schema::table('attendances', function (Blueprint $table) {
                 $table->dropUnique('attendance_member_lock');
             });
         }
