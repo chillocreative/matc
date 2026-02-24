@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import axios from 'axios';
 
 const props = defineProps({
@@ -225,19 +225,20 @@ function clearFieldError(field) {
     }
 }
 
-function forceUppercase(event) {
-    const input = event.target;
-    const start = input.selectionStart;
-    input.value = input.value.toUpperCase();
-    input.selectionStart = input.selectionEnd = start;
-}
+watch(name, (val) => {
+    const upper = val.toUpperCase();
+    if (val !== upper) name.value = upper;
+});
 
-function forceDigits(event) {
-    const input = event.target;
-    const start = input.selectionStart;
-    input.value = input.value.replace(/\D/g, '');
-    input.selectionStart = input.selectionEnd = start;
-}
+watch(address, (val) => {
+    const upper = val.toUpperCase();
+    if (val !== upper) address.value = upper;
+});
+
+watch(phone_number, (val) => {
+    const digits = val.replace(/\D/g, '');
+    if (val !== digits) phone_number.value = digits;
+});
 </script>
 
 <template>
@@ -296,7 +297,7 @@ function forceDigits(event) {
                     v-model="name"
                     type="text"
                     autocomplete="name"
-                    @input="forceUppercase($event); name = $event.target.value; clearFieldError('name')"
+                    @input="clearFieldError('name')"
                     class="mt-1 block w-full rounded-lg shadow-sm text-base sm:text-lg uppercase"
                     :class="[
                         dark
@@ -338,7 +339,8 @@ function forceDigits(event) {
                     inputmode="numeric"
                     placeholder="0121234567"
                     autocomplete="tel"
-                    @input="forceDigits($event); phone_number = $event.target.value"
+                    
+
                     class="mt-1 block w-full rounded-lg shadow-sm"
                     :class="dark ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
                 />
@@ -351,7 +353,8 @@ function forceDigits(event) {
                     id="address"
                     v-model="address"
                     rows="2"
-                    @input="forceUppercase($event); address = $event.target.value"
+                    
+
                     class="mt-1 block w-full rounded-lg shadow-sm uppercase"
                     :class="dark ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
                 ></textarea>
