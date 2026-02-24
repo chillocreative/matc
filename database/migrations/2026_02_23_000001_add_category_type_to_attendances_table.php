@@ -11,34 +11,42 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Step 1: Add column if missing (may exist from partial run)
         if (! Schema::hasColumn('attendances', 'category_type')) {
             Schema::table('attendances', function (Blueprint $table) {
                 $table->string('category_type')->after('ic_number_hash');
             });
         }
 
+        // Step 2: Drop ALL foreign keys on the table so indexes can be freely dropped
+        $this->dropAllForeignKeysOnTable('attendances');
+
+        // Step 3: Drop old unique indexes if they still exist
         if ($this->indexExists('attendance_ic_lock')) {
-            Schema::table('attendances', function (Blueprint $table) {
-                $table->dropUnique('attendance_ic_lock');
-            });
+            DB::statement('ALTER TABLE `attendances` DROP INDEX `attendance_ic_lock`');
         }
 
         if ($this->indexExists('attendance_member_lock')) {
-            $this->dropAllForeignKeysOnColumn('attendances', 'member_id');
-            Schema::table('attendances', function (Blueprint $table) {
-                $table->dropUnique('attendance_member_lock');
-            });
+            DB::statement('ALTER TABLE `attendances` DROP INDEX `attendance_member_lock`');
         }
 
-        if (! $this->hasForeignKeyOnColumn('attendances', 'member_id')) {
-            Schema::table('attendances', function (Blueprint $table) {
-                $table->foreign('member_id')->references('id')->on('members')->cascadeOnDelete();
-            });
-        }
-
+        // Step 4: Add new unique constraint if missing
         if (! $this->indexExists('attendance_category_lock')) {
             Schema::table('attendances', function (Blueprint $table) {
                 $table->unique(['meeting_id', 'ic_number_hash', 'category_type'], 'attendance_category_lock');
+            });
+        }
+
+        // Step 5: Re-add foreign keys
+        if (! $this->hasForeignKey('attendances', 'meeting_id')) {
+            Schema::table('attendances', function (Blueprint $table) {
+                $table->foreign('meeting_id')->references('id')->on('meetings')->cascadeOnDelete();
+            });
+        }
+
+        if (! $this->hasForeignKey('attendances', 'member_id')) {
+            Schema::table('attendances', function (Blueprint $table) {
+                $table->foreign('member_id')->references('id')->on('members')->cascadeOnDelete();
             });
         }
     }
@@ -55,42 +63,40 @@ return new class extends Migration
         });
     }
 
-    private function indexExists(string $indexName): bool
+    private function dropAllForeignKeysOnTable(string $table): void
     {
-        $database = DB::getDatabaseName();
-
-        return DB::table('information_schema.statistics')
-            ->where('table_schema', $database)
-            ->where('table_name', 'attendances')
-            ->where('index_name', $indexName)
-            ->exists();
-    }
-
-    private function dropAllForeignKeysOnColumn(string $table, string $column): void
-    {
-        $database = DB::getDatabaseName();
-
-        $fks = DB::table('information_schema.key_column_usage')
-            ->where('table_schema', $database)
-            ->where('table_name', $table)
-            ->where('column_name', $column)
-            ->whereNotNull('referenced_table_name')
-            ->pluck('constraint_name');
+        $fks = DB::select(
+            "SELECT CONSTRAINT_NAME
+             FROM information_schema.TABLE_CONSTRAINTS
+             WHERE TABLE_SCHEMA = DATABASE()
+               AND TABLE_NAME = ?
+               AND CONSTRAINT_TYPE = 'FOREIGN KEY'",
+            [$table]
+        );
 
         foreach ($fks as $fk) {
-            DB::statement("ALTER TABLE `{$table}` DROP FOREIGN KEY `{$fk}`");
+            DB::statement("ALTER TABLE `{$table}` DROP FOREIGN KEY `{$fk->CONSTRAINT_NAME}`");
         }
     }
 
-    private function hasForeignKeyOnColumn(string $table, string $column): bool
+    private function indexExists(string $indexName): bool
     {
-        $database = DB::getDatabaseName();
+        return count(DB::select(
+            "SHOW INDEX FROM `attendances` WHERE Key_name = ?",
+            [$indexName]
+        )) > 0;
+    }
 
-        return DB::table('information_schema.key_column_usage')
-            ->where('table_schema', $database)
-            ->where('table_name', $table)
-            ->where('column_name', $column)
-            ->whereNotNull('referenced_table_name')
-            ->exists();
+    private function hasForeignKey(string $table, string $column): bool
+    {
+        return count(DB::select(
+            "SELECT CONSTRAINT_NAME
+             FROM information_schema.KEY_COLUMN_USAGE
+             WHERE TABLE_SCHEMA = DATABASE()
+               AND TABLE_NAME = ?
+               AND COLUMN_NAME = ?
+               AND REFERENCED_TABLE_NAME IS NOT NULL",
+            [$table, $column]
+        )) > 0;
     }
 };
