@@ -44,6 +44,8 @@ const loading = ref(false);
 const errors = ref({});
 const successMessage = ref('');
 const errorMessage = ref('');
+const submitted = ref(false);
+const submittedName = ref('');
 
 const recaptchaReady = ref(false);
 
@@ -180,6 +182,8 @@ async function submit() {
         const response = await axios.post(props.verifyUrl, payload);
 
         successMessage.value = response.data.message;
+        submittedName.value = name.value.trim();
+        submitted.value = true;
         resetForm();
         emit('verified');
     } catch (error) {
@@ -238,18 +242,33 @@ function forceDigits(event) {
 
 <template>
     <div>
-        <!-- Success -->
-        <div v-if="successMessage" class="mb-4 rounded-md p-4" :class="dark ? 'bg-green-500/20 ring-1 ring-green-400/30' : 'bg-green-50'">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <p class="ml-3 text-sm font-medium" :class="dark ? 'text-green-300' : 'text-green-800'">{{ successMessage }}</p>
+        <!-- Success Page -->
+        <div v-if="submitted" class="text-center py-6 sm:py-10">
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full sm:h-20 sm:w-20" :class="dark ? 'bg-emerald-500/20 ring-1 ring-emerald-400/30' : 'bg-green-100'">
+                <svg class="h-8 w-8 sm:h-10 sm:w-10" :class="dark ? 'text-emerald-400' : 'text-green-600'" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
             </div>
+            <h3 class="mt-4 text-lg font-bold sm:text-xl" :class="dark ? 'text-white' : 'text-gray-900'">Berjaya!</h3>
+            <p class="mt-2 text-sm sm:text-base" :class="dark ? 'text-sky-200/70' : 'text-gray-600'">{{ successMessage }}</p>
+            <p v-if="submittedName" class="mt-1 text-xs sm:text-sm" :class="dark ? 'text-sky-200/50' : 'text-gray-500'">
+                Nama: <span class="font-semibold" :class="dark ? 'text-white' : 'text-gray-800'">{{ submittedName }}</span>
+            </p>
+            <button
+                @click="submitted = false"
+                :class="dark
+                    ? 'mt-6 inline-flex items-center gap-2 rounded-xl bg-sky-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:bg-sky-400'
+                    : 'mt-6 inline-flex items-center gap-2 rounded-md bg-green-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-green-500'"
+            >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Daftar Lagi
+            </button>
         </div>
 
+        <!-- Form -->
+        <template v-else>
         <!-- Error -->
         <div v-if="errorMessage" class="mb-4 rounded-md p-4" :class="dark ? 'bg-red-500/20 ring-1 ring-red-400/30' : 'bg-red-50'">
             <div class="flex">
@@ -421,5 +440,6 @@ function forceDigits(event) {
                 <span v-else>Hantar</span>
             </button>
         </form>
+        </template>
     </div>
 </template>
