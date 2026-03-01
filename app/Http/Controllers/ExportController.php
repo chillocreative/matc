@@ -11,6 +11,8 @@ use App\Services\AttendanceService;
 use App\Services\MeetingService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExportController extends Controller
@@ -18,7 +20,9 @@ class ExportController extends Controller
     public function __construct(
         private readonly AttendanceService $attendanceService,
         private readonly MeetingService $meetingService,
-    ) {}
+    ) {
+        File::ensureDirectoryExists(storage_path('fonts'));
+    }
 
     public function attendancePdf(Request $request): Response
     {
@@ -39,20 +43,29 @@ class ExportController extends Controller
         $rows = $attendances->map(fn ($a) => [
             'name' => $a->member?->name,
             'ic_number' => $a->member?->ic_number,
+            'position_type' => $a->member?->position_type,
             'phone_number' => $a->member?->phone_number,
             'address' => $a->member?->address,
+            'status' => $a->status?->label(),
+            'absence_reason' => $a->absence_reason,
         ])->toArray();
 
         $dateFormatted = $meeting->date->format('d-m-Y');
 
-        $pdf = Pdf::loadView('pdf.attendance', [
-            'meetingTitle' => $meeting->title,
-            'meetingDate' => $dateFormatted,
-            'categoryLabel' => $categoryEnum->label(),
-            'rows' => $rows,
-        ])->setPaper('a4', 'landscape');
+        try {
+            $pdf = Pdf::loadView('pdf.attendance', [
+                'meetingTitle' => $meeting->title,
+                'meetingDate' => $dateFormatted,
+                'categoryLabel' => $categoryEnum->label(),
+                'rows' => $rows,
+            ])->setPaper('a4', 'landscape');
 
-        return $pdf->download("kehadiran-{$category}-{$dateFormatted}.pdf");
+            return $pdf->download("kehadiran-{$category}-{$dateFormatted}.pdf");
+        } catch (\Throwable $e) {
+            Log::error('PDF generation failed', ['error' => $e->getMessage()]);
+
+            return redirect()->back()->with('error', 'Gagal menjana PDF. Sila cuba lagi.');
+        }
     }
 
     public function membersPdf(Request $request): Response

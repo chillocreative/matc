@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { ref, nextTick } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
     meetings: Object,
@@ -46,6 +47,53 @@ const statusColors = {
     late: 'bg-yellow-400/15 text-yellow-300 ring-1 ring-yellow-400/20',
     excused: 'bg-white/10 text-sky-200 ring-1 ring-white/15',
 };
+
+// PDF download
+const downloading = ref(false);
+const downloadError = ref('');
+
+async function downloadPdf() {
+    downloading.value = true;
+    downloadError.value = '';
+
+    try {
+        const response = await axios.get(route('export.attendance.pdf', {
+            meeting_id: selectedMeeting.value,
+            category: selectedCategory.value,
+        }), { responseType: 'blob' });
+
+        const contentType = response.headers['content-type'] || '';
+        if (!contentType.includes('application/pdf')) {
+            throw new Error('Respons bukan PDF.');
+        }
+
+        const disposition = response.headers['content-disposition'] || '';
+        const match = disposition.match(/filename="?([^";\n]+)"?/);
+        const filename = match ? match[1] : 'kehadiran.pdf';
+
+        const url = window.URL.createObjectURL(response.data);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+    } catch (error) {
+        const status = error.response?.status;
+        if (status === 401 || status === 419) {
+            downloadError.value = 'Sesi anda telah tamat. Sila muat semula halaman.';
+        } else if (status === 403) {
+            downloadError.value = 'Anda tidak mempunyai kebenaran untuk memuat turun PDF.';
+        } else if (status === 422) {
+            downloadError.value = 'Data tidak sah. Sila pilih mesyuarat dan kategori.';
+        } else {
+            downloadError.value = error.message || 'Gagal memuat turun PDF. Sila cuba lagi.';
+        }
+    } finally {
+        downloading.value = false;
+    }
+}
 
 // Edit modal
 const showEditModal = ref(false);
@@ -104,6 +152,10 @@ function executeDelete() {
                     <p class="text-sm text-emerald-300">{{ page.props.flash.success }}</p>
                 </div>
 
+                <div v-if="downloadError" class="mb-4 rounded-md bg-red-400/15 p-4 ring-1 ring-red-400/20">
+                    <p class="text-sm text-red-300">{{ downloadError }}</p>
+                </div>
+
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-sky-100/80 mb-1">Pilih Mesyuarat</label>
                     <select
@@ -137,13 +189,14 @@ function executeDelete() {
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-medium text-white">{{ meeting.title }}</h3>
                             <div class="flex items-center gap-2">
-                                <a
+                                <button
                                     v-if="selectedCategory"
-                                    :href="route('export.attendance.pdf', { meeting_id: selectedMeeting, category: selectedCategory })"
-                                    class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-600/30 hover:bg-emerald-500"
+                                    @click="downloadPdf"
+                                    :disabled="downloading"
+                                    class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-600/30 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Muat Turun PDF
-                                </a>
+                                    {{ downloading ? 'Memuat turun...' : 'Muat Turun PDF' }}
+                                </button>
                                 <Link
                                     v-if="page.props.auth.user.is_admin"
                                     :href="route('attendances.mark', meeting.id)"
