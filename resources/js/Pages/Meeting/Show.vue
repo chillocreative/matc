@@ -14,6 +14,15 @@ const statusColors = {
     late: 'bg-yellow-400/15 text-yellow-300 ring-1 ring-yellow-400/20',
     excused: 'bg-white/10 text-sky-200 ring-1 ring-white/15',
 };
+
+function formatDate(date) {
+    if (!date) return '-';
+    return new Date(date).toLocaleDateString('ms-MY', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    });
+}
 </script>
 
 <template>
@@ -55,7 +64,7 @@ const statusColors = {
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-sky-200/50">Tarikh</dt>
-                                <dd class="mt-1 text-sm text-white">{{ meeting.date }}</dd>
+                                <dd class="mt-1 text-sm text-white">{{ formatDate(meeting.date) }}</dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-sky-200/50">Masa</dt>

@@ -30,6 +30,15 @@ const statusColors = {
     completed: 'bg-emerald-400/15 text-emerald-300 ring-1 ring-emerald-400/20',
     cancelled: 'bg-red-400/15 text-red-300 ring-1 ring-red-400/20',
 };
+
+function formatDate(date) {
+    if (!date) return '-';
+    return new Date(date).toLocaleDateString('ms-MY', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    });
+}
 </script>
 
 <template>
@@ -82,7 +91,7 @@ const statusColors = {
                                         {{ meeting.title }}
                                     </Link>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ meeting.date }}</td>
+                                <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ formatDate(meeting.date) }}</td>
                                 <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ meeting.location }}</td>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium" :class="statusColors[meeting.status] || 'bg-white/10 text-sky-200 ring-1 ring-white/15'">
