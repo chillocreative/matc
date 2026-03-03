@@ -27,6 +27,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    suggestionEnabled: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emit = defineEmits(['verified']);
@@ -38,6 +42,7 @@ const address = ref('');
 const position_type = ref('');
 const status = ref('hadir');
 const absence_reason = ref('');
+const suggestion = ref('');
 const website = ref('');
 
 const loading = ref(false);
@@ -171,6 +176,7 @@ async function submit() {
             position_type: position_type.value,
             status: status.value,
             absence_reason: status.value === 'tidak_hadir' ? absence_reason.value.trim() || null : null,
+            suggestion: props.suggestionEnabled ? suggestion.value.trim() || null : null,
             website: website.value,
             _ft: props.formToken,
         };
@@ -215,6 +221,7 @@ function resetForm() {
     position_type.value = '';
     status.value = 'hadir';
     absence_reason.value = '';
+    suggestion.value = '';
     errors.value = {};
 }
 
@@ -405,6 +412,18 @@ watch(phone_number, (val) => {
                         <span class="text-sm font-medium" :class="dark ? 'text-white' : 'text-gray-800'">Tidak Hadir</span>
                     </label>
                 </div>
+            </div>
+
+            <!-- Berikan Usul -->
+            <div v-if="suggestionEnabled">
+                <label for="suggestion" class="block text-xs font-medium sm:text-sm" :class="dark ? 'text-sky-100/80' : 'text-gray-700'">Berikan Usul:</label>
+                <textarea
+                    id="suggestion"
+                    v-model="suggestion"
+                    rows="2"
+                    class="mt-1 block w-full rounded-lg shadow-sm"
+                    :class="dark ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
+                ></textarea>
             </div>
 
             <!-- Sebab Tidak Hadir -->

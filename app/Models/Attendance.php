@@ -22,6 +22,7 @@ class Attendance extends Model
         'category_type',
         'status',
         'absence_reason',
+        'suggestion',
     ];
 
     protected function casts(): array

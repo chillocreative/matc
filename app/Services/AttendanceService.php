@@ -64,9 +64,9 @@ class AttendanceService
     /**
      * @param  array{name: string, phone_number: ?string, address: ?string, position_type: ?string}  $memberData
      */
-    public function publicVerifyByIc(int $meetingId, string $icNumber, CategoryType $category, array $memberData = [], AttendanceStatus $status = AttendanceStatus::Present, ?string $absenceReason = null): Attendance
+    public function publicVerifyByIc(int $meetingId, string $icNumber, CategoryType $category, array $memberData = [], AttendanceStatus $status = AttendanceStatus::Present, ?string $absenceReason = null, ?string $suggestion = null): Attendance
     {
-        return DB::transaction(function () use ($meetingId, $icNumber, $category, $memberData, $status, $absenceReason): Attendance {
+        return DB::transaction(function () use ($meetingId, $icNumber, $category, $memberData, $status, $absenceReason, $suggestion): Attendance {
             $icHash = IcHasher::hash($icNumber);
 
             $member = $this->memberRepository->findByIcHashForUpdateOrNull($icHash);
@@ -102,6 +102,7 @@ class AttendanceService
                 'category_type' => $category->value,
                 'status' => $status->value,
                 'absence_reason' => $absenceReason,
+                'suggestion' => $suggestion,
             ]);
         });
     }

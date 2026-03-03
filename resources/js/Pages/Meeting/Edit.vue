@@ -14,6 +14,7 @@ const form = useForm({
     time: props.meeting.time || '',
     location: props.meeting.location || '',
     status: props.meeting.status,
+    suggestion_enabled: !!props.meeting.suggestion_enabled,
 });
 
 function submit() {
@@ -70,6 +71,20 @@ function submit() {
                                 <option v-for="status in statuses" :key="status.value" :value="status.value" class="bg-sky-900 text-white">{{ status.value }}</option>
                             </select>
                             <p v-if="form.errors.status" class="mt-1 text-sm text-red-300">{{ form.errors.status }}</p>
+                        </div>
+
+                        <div>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <div class="relative flex items-center">
+                                    <input
+                                        v-model="form.suggestion_enabled"
+                                        type="checkbox"
+                                        class="peer h-5 w-5 rounded border-0 bg-white/10 text-sky-500 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 focus:ring-offset-0"
+                                    />
+                                </div>
+                                <span class="text-sm font-medium text-sky-100/80">Aktifkan Field "Usul"</span>
+                            </label>
+                            <p class="mt-1 text-xs text-sky-200/40 ml-8">Jika diaktifkan, ahli boleh memberikan usul dalam borang kehadiran.</p>
                         </div>
 
                         <div class="flex items-center gap-4">

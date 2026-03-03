@@ -83,6 +83,7 @@ function onVerified() {
                     :verify-url="verifyUrl"
                     :form-token="formToken || ''"
                     :recaptcha-site-key="recaptchaSiteKey || ''"
+                    :suggestion-enabled="!!meeting?.suggestion_enabled"
                     :dark="true"
                     @verified="onVerified"
                 />

@@ -24,6 +24,7 @@ class StoreMeetingRequest extends FormRequest
             'time' => ['nullable', 'string', 'max:10'],
             'location' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', Rule::enum(MeetingStatus::class)],
+            'suggestion_enabled' => ['nullable', 'boolean'],
         ];
     }
 }

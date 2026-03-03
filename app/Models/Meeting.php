@@ -20,6 +20,7 @@ class Meeting extends Model
         'time',
         'location',
         'status',
+        'suggestion_enabled',
     ];
 
     protected function casts(): array
@@ -27,6 +28,7 @@ class Meeting extends Model
         return [
             'date' => 'date:j M Y',
             'status' => MeetingStatus::class,
+            'suggestion_enabled' => 'boolean',
         ];
     }
 
