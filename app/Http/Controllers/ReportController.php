@@ -13,7 +13,7 @@ use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
 {
@@ -62,7 +62,7 @@ class ReportController extends Controller
         return redirect()->route('laporan.index')->with('success', 'Laporan berjaya dimuat naik.');
     }
 
-    public function downloadFile(string $category): BinaryFileResponse
+    public function downloadFile(string $category): StreamedResponse
     {
         abort_unless(in_array($category, self::VALID_CATEGORIES, true), 404);
 
