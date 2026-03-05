@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Report;
+use BaconQrCode\Common\ErrorCorrectionLevel;
+use BaconQrCode\Encoder\Encoder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController extends Controller
@@ -80,11 +81,45 @@ class ReportController extends Controller
 
         $url = route('laporan.download', $category);
 
-        $svg = QrCode::format('svg')->size(400)->generate($url);
+        $jpg = $this->generateQrJpg($url);
 
-        return response($svg, 200, [
-            'Content-Type'        => 'image/svg+xml',
-            'Content-Disposition' => "attachment; filename=\"qr-laporan-{$category}.svg\"",
+        return response($jpg, 200, [
+            'Content-Type'        => 'image/jpeg',
+            'Content-Disposition' => "attachment; filename=\"qr-laporan-{$category}.jpg\"",
         ]);
+    }
+
+    private function generateQrJpg(string $url): string
+    {
+        $qrCode = Encoder::encode($url, ErrorCorrectionLevel::M());
+        $matrix = $qrCode->getMatrix();
+        $size   = $matrix->getWidth();
+
+        $scale   = 10;
+        $margin  = 4 * $scale;
+        $imgSize = $size * $scale + $margin * 2;
+
+        $img   = imagecreatetruecolor($imgSize, $imgSize);
+        $white = imagecolorallocate($img, 255, 255, 255);
+        $black = imagecolorallocate($img, 0, 0, 0);
+
+        imagefilledrectangle($img, 0, 0, $imgSize - 1, $imgSize - 1, $white);
+
+        for ($y = 0; $y < $size; $y++) {
+            for ($x = 0; $x < $size; $x++) {
+                if ($matrix->get($x, $y) === 1) {
+                    $px = $margin + $x * $scale;
+                    $py = $margin + $y * $scale;
+                    imagefilledrectangle($img, $px, $py, $px + $scale - 1, $py + $scale - 1, $black);
+                }
+            }
+        }
+
+        ob_start();
+        imagejpeg($img, null, 95);
+        $jpg = ob_get_clean();
+        imagedestroy($img);
+
+        return $jpg;
     }
 }

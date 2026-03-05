@@ -40,7 +40,10 @@ function handleUpload(category) {
 }
 
 function downloadQr(category) {
-    window.location.href = route('laporan.qr', category);
+    const a = document.createElement('a');
+    a.href = route('laporan.qr', category);
+    a.download = `qr-laporan-${category}.jpg`;
+    a.click();
 }
 
 const colorMap = {
