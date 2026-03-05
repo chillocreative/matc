@@ -10,6 +10,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\QrAttendanceController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -50,11 +51,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/export/attendance-pdf', [ExportController::class, 'attendancePdf'])->name('export.attendance.pdf');
     Route::get('/export/members-pdf', [ExportController::class, 'membersPdf'])->name('export.members.pdf');
 
+    // Laporan
+    Route::get('/laporan', [ReportController::class, 'index'])->name('laporan.index');
+    Route::post('/laporan/{category}/upload', [ReportController::class, 'upload'])->name('laporan.upload');
+    Route::get('/laporan/{category}/qr', [ReportController::class, 'downloadQr'])->name('laporan.qr');
+
     // QR code display pages (admin)
     Route::get('/qr/matc', [QrAttendanceController::class, 'show'])->defaults('category', 'matc')->name('admin.qr.matc');
     Route::get('/qr/amk', [QrAttendanceController::class, 'show'])->defaults('category', 'amk')->name('admin.qr.amk');
     Route::get('/qr/wanita', [QrAttendanceController::class, 'show'])->defaults('category', 'wanita')->name('admin.qr.wanita');
 });
+
+// Public laporan download (no auth required)
+Route::get('/laporan/{category}/download', [ReportController::class, 'downloadFile'])->name('laporan.download');
 
 // Public category attendance form pages
 Route::get('/matc', [QrAttendanceController::class, 'publicForm'])->defaults('category', 'matc')->name('qr.matc');
