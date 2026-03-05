@@ -91,6 +91,7 @@ function formatDate(date) {
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Nama Ahli</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">No. IC</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Usul</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/10">
@@ -105,6 +106,7 @@ function formatDate(date) {
                                             {{ attendance.status }}
                                         </span>
                                     </td>
+                                    <td class="px-6 py-4 text-sm text-sky-200/80">{{ attendance.suggestion || '-' }}</td>
                                 </tr>
                             </tbody>
                         </table>
