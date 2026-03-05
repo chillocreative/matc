@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3';
 import KehadiranForm from '@/Components/KehadiranForm.vue';
+import { computed } from 'vue';
 
 const props = defineProps({
     category: String,
@@ -11,6 +12,10 @@ const props = defineProps({
     formToken: String,
     recaptchaSiteKey: String,
 });
+
+const matcUrl = computed(() =>
+    (props.category === 'wanita' || props.category === 'amk') ? route('qr.matc') : ''
+);
 
 const categoryColors = {
     matc: { badge: 'bg-sky-400/15 text-sky-300 ring-sky-400/20' },
@@ -84,6 +89,7 @@ function onVerified() {
                     :form-token="formToken || ''"
                     :recaptcha-site-key="recaptchaSiteKey || ''"
                     :suggestion-enabled="!!meeting?.suggestion_enabled"
+                    :matc-url="matcUrl"
                     :dark="true"
                     @verified="onVerified"
                 />
