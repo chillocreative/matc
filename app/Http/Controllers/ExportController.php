@@ -49,7 +49,7 @@ class ExportController extends Controller
             'status' => $a->status?->label(),
             'absence_reason' => $a->absence_reason,
             'suggestion' => $a->suggestion,
-        ])->toArray();
+        ])->sortBy('name')->values()->toArray();
 
         $dateFormatted = $meeting->date->format('d-m-Y');
 
