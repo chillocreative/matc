@@ -43,7 +43,7 @@ function submit() {
                     <form @submit.prevent="submit" class="p-6 space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-sky-100/80">Kategori</label>
-                            <select v-model="form.category_type" class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400">
+                            <select v-model="form.category_type" required class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400">
                                 <option value="" class="bg-sky-900 text-white">-- Pilih Kategori --</option>
                                 <option v-for="cat in categories" :key="cat.value" :value="cat.value" class="bg-sky-900 text-white">
                                     {{ categoryLabels[cat.value] || cat.value }}
@@ -54,37 +54,37 @@ function submit() {
 
                         <div>
                             <label class="block text-sm font-medium text-sky-100/80">Nama</label>
-                            <input v-model="form.name" type="text" class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
+                            <input v-model="form.name" type="text" required class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
                             <p v-if="form.errors.name" class="mt-1 text-sm text-red-300">{{ form.errors.name }}</p>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-sky-100/80">No. IC</label>
-                            <input v-model="form.ic_number" type="text" class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
+                            <input v-model="form.ic_number" type="text" required class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
                             <p v-if="form.errors.ic_number" class="mt-1 text-sm text-red-300">{{ form.errors.ic_number }}</p>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-sky-100/80">Telefon</label>
-                            <input v-model="form.phone_number" type="text" class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
+                            <input v-model="form.phone_number" type="text" required class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
                             <p v-if="form.errors.phone_number" class="mt-1 text-sm text-red-300">{{ form.errors.phone_number }}</p>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-sky-100/80">Alamat</label>
-                            <textarea v-model="form.address" rows="3" class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40"></textarea>
+                            <textarea v-model="form.address" rows="3" required class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40"></textarea>
                             <p v-if="form.errors.address" class="mt-1 text-sm text-red-300">{{ form.errors.address }}</p>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-sky-100/80">Jenis Jawatan</label>
-                                <input v-model="form.position_type" type="text" class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
+                                <input v-model="form.position_type" type="text" required class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
                                 <p v-if="form.errors.position_type" class="mt-1 text-sm text-red-300">{{ form.errors.position_type }}</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-sky-100/80">Nama Jawatan</label>
-                                <input v-model="form.position_name" type="text" class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
+                                <input v-model="form.position_name" type="text" required class="mt-1 block w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 placeholder-sky-200/40" />
                                 <p v-if="form.errors.position_name" class="mt-1 text-sm text-red-300">{{ form.errors.position_name }}</p>
                             </div>
                         </div>

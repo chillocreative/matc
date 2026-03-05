@@ -134,6 +134,14 @@ function validateForm() {
         e.ic_number = 'Format No. IC tidak sah.';
     }
 
+    if (!phone_number.value.trim()) {
+        e.phone_number = 'No. Telefon wajib diisi.';
+    }
+
+    if (!address.value.trim()) {
+        e.address = 'Alamat wajib diisi.';
+    }
+
     if (!position_type.value) {
         e.position_type = 'Sila pilih jenis jawatan.';
     }
@@ -304,6 +312,7 @@ watch(phone_number, (val) => {
                     v-model="name"
                     type="text"
                     autocomplete="name"
+                    required
                     @input="clearFieldError('name')"
                     class="mt-1 block w-full rounded-lg shadow-sm text-base sm:text-lg uppercase"
                     :class="[
@@ -325,6 +334,7 @@ watch(phone_number, (val) => {
                     inputmode="numeric"
                     placeholder="880101145678"
                     autocomplete="off"
+                    required
                     @input="clearFieldError('ic_number')"
                     class="mt-1 block w-full rounded-lg shadow-sm text-base sm:text-lg"
                     :class="[
@@ -346,11 +356,16 @@ watch(phone_number, (val) => {
                     inputmode="numeric"
                     placeholder="0121234567"
                     autocomplete="tel"
-                    
-
+                    required
+                    @input="clearFieldError('phone_number')"
                     class="mt-1 block w-full rounded-lg shadow-sm"
-                    :class="dark ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
+                    :class="[
+                        dark
+                            ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 focus:ring-2 ' + (errors.phone_number ? 'ring-red-400/50 focus:ring-red-400' : 'ring-white/15 focus:ring-sky-400')
+                            : (errors.phone_number ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500')
+                    ]"
                 />
+                <p v-if="errors.phone_number" class="mt-1 text-xs sm:text-sm" :class="dark ? 'text-red-300' : 'text-red-600'">{{ errors.phone_number }}</p>
             </div>
 
             <!-- Alamat -->
@@ -360,11 +375,16 @@ watch(phone_number, (val) => {
                     id="address"
                     v-model="address"
                     rows="2"
-                    
-
+                    required
+                    @input="clearFieldError('address')"
                     class="mt-1 block w-full rounded-lg shadow-sm uppercase"
-                    :class="dark ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
+                    :class="[
+                        dark
+                            ? 'border-0 bg-white/10 text-white placeholder-sky-300/40 ring-1 focus:ring-2 ' + (errors.address ? 'ring-red-400/50 focus:ring-red-400' : 'ring-white/15 focus:ring-sky-400')
+                            : (errors.address ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500')
+                    ]"
                 ></textarea>
+                <p v-if="errors.address" class="mt-1 text-xs sm:text-sm" :class="dark ? 'text-red-300' : 'text-red-600'">{{ errors.address }}</p>
             </div>
 
             <!-- Jenis Jawatan -->
@@ -373,6 +393,7 @@ watch(phone_number, (val) => {
                 <select
                     id="position_type"
                     v-model="position_type"
+                    required
                     @change="clearFieldError('position_type')"
                     class="mt-1 block w-full rounded-lg shadow-sm"
                     :class="[
