@@ -262,7 +262,22 @@ function executeDelete() {
                                 <tr v-for="attendance in attendances" :key="attendance.id" class="hover:bg-white/5">
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-white uppercase">{{ attendance.member?.name }}</td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50 uppercase">{{ attendance.member?.ic_number }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/80 uppercase">{{ categoryLabels[attendance.member?.category_type] || '-' }}</td>
+                                    <td class="px-6 py-4 text-sm">
+                                        <div class="flex flex-wrap gap-1">
+                                            <span
+                                                v-for="cat in (attendance.all_categories || [attendance.category_type])"
+                                                :key="cat"
+                                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium uppercase ring-1"
+                                                :class="{
+                                                    'bg-sky-400/15 text-sky-300 ring-sky-400/20': cat === 'matc',
+                                                    'bg-rose-400/15 text-rose-300 ring-rose-400/20': cat === 'wanita',
+                                                    'bg-emerald-400/15 text-emerald-300 ring-emerald-400/20': cat === 'amk',
+                                                }"
+                                            >
+                                                {{ categoryLabels[cat] || cat }}
+                                            </span>
+                                        </div>
+                                    </td>
                                     <td class="px-6 py-4 text-sm text-sky-200/80 uppercase">{{ attendance.member?.address || '-' }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">
                                         <span

@@ -27,12 +27,20 @@ class AttendanceRepository
         return $this->model
             ->where('meeting_id', $meetingId)
             ->with('member')
-            ->when($category, fn ($query) => $query->whereHas(
-                'member',
-                fn ($q) => $q->where('category_type', $category),
-            ))
+            ->when($category, fn ($query) => $query->where('category_type', $category))
             ->latest('created_at')
             ->get();
+    }
+
+    public function getCategoryMapForMeeting(int $meetingId): array
+    {
+        return $this->model
+            ->where('meeting_id', $meetingId)
+            ->select('ic_number_hash', 'category_type')
+            ->get()
+            ->groupBy('ic_number_hash')
+            ->map(fn ($group) => $group->pluck('category_type')->unique()->values()->toArray())
+            ->toArray();
     }
 
     public function existsForMeetingAndIcHash(int $meetingId, string $icHash): bool

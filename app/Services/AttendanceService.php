@@ -32,6 +32,11 @@ class AttendanceService
         return $this->repository->getByMeetingFiltered($meetingId, $category);
     }
 
+    public function getCategoryMapForMeeting(int $meetingId): array
+    {
+        return $this->repository->getCategoryMapForMeeting($meetingId);
+    }
+
     public function markAttendance(int $meetingId, array $attendances): void
     {
         DB::transaction(function () use ($meetingId, $attendances): void {

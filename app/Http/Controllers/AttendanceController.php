@@ -36,6 +36,14 @@ class AttendanceController extends Controller
             ? $this->attendanceService->getByMeetingFiltered((int) $meetingId, $category)
             : collect();
 
+        if ($meetingId && $attendances->isNotEmpty()) {
+            $categoryMap = $this->attendanceService->getCategoryMapForMeeting((int) $meetingId);
+            $attendances = $attendances->map(function ($attendance) use ($categoryMap) {
+                $attendance->all_categories = $categoryMap[$attendance->ic_number_hash] ?? [$attendance->category_type];
+                return $attendance;
+            });
+        }
+
         return Inertia::render('Attendance/Index', [
             'meetings' => $this->meetingService->list(null, 100),
             'meeting' => $meeting,
