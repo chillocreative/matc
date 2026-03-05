@@ -209,32 +209,33 @@ function executeDelete() {
                     </select>
                 </div>
 
-                <div v-if="selectedMeeting" class="mb-4">
-                    <label class="block text-sm font-medium text-sky-100/80 mb-1">Kategori</label>
-                    <select
-                        v-model="selectedCategory"
-                        @change="onCategoryChange"
-                        class="w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 sm:max-w-md"
-                    >
-                        <option value="" class="bg-sky-900 text-white">Semua</option>
-                        <option value="matc" class="bg-sky-900 text-white">MATC</option>
-                        <option value="amk" class="bg-sky-900 text-white">MATAMKC</option>
-                        <option value="wanita" class="bg-sky-900 text-white">MATWC</option>
-                    </select>
-                </div>
-
-                <div v-if="meeting" class="mb-4">
-                    <label class="block text-sm font-medium text-sky-100/80 mb-1">Cari Ahli</label>
-                    <div class="relative sm:max-w-md">
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-sky-300/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                        </svg>
-                        <input
-                            v-model="searchQuery"
-                            type="text"
-                            placeholder="Cari nama atau No. IC..."
-                            class="w-full rounded-md border-0 bg-white/10 pl-9 pr-4 py-2 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 text-sm"
-                        />
+                <div v-if="selectedMeeting" class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-end">
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-sky-100/80 mb-1">Kategori</label>
+                        <select
+                            v-model="selectedCategory"
+                            @change="onCategoryChange"
+                            class="w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400"
+                        >
+                            <option value="" class="bg-sky-900 text-white">Semua</option>
+                            <option value="matc" class="bg-sky-900 text-white">MATC</option>
+                            <option value="amk" class="bg-sky-900 text-white">MATAMKC</option>
+                            <option value="wanita" class="bg-sky-900 text-white">MATWC</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-sky-100/80 mb-1">Cari Ahli</label>
+                        <div class="relative">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-sky-300/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                            <input
+                                v-model="searchQuery"
+                                type="text"
+                                placeholder="Cari nama atau No. IC..."
+                                class="w-full rounded-md border-0 bg-white/10 pl-9 pr-4 py-2 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 text-sm"
+                            />
+                        </div>
                     </div>
                 </div>
 
