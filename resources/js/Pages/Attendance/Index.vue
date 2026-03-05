@@ -4,6 +4,34 @@ import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { ref, nextTick } from 'vue';
 import axios from 'axios';
 
+// Drag-to-scroll
+const tableWrapper = ref(null);
+let isDragging = false;
+let startX = 0;
+let scrollLeft = 0;
+
+function onMouseDown(e) {
+    isDragging = true;
+    startX = e.pageX - tableWrapper.value.offsetLeft;
+    scrollLeft = tableWrapper.value.scrollLeft;
+    tableWrapper.value.style.cursor = 'grabbing';
+}
+function onMouseLeave() {
+    isDragging = false;
+    if (tableWrapper.value) tableWrapper.value.style.cursor = 'grab';
+}
+function onMouseUp() {
+    isDragging = false;
+    if (tableWrapper.value) tableWrapper.value.style.cursor = 'grab';
+}
+function onMouseMove(e) {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - tableWrapper.value.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    tableWrapper.value.scrollLeft = scrollLeft - walk;
+}
+
 const props = defineProps({
     meetings: Object,
     meeting: Object,
@@ -207,7 +235,17 @@ function executeDelete() {
                             </div>
                         </div>
 
-                        <table v-if="attendances.length" class="min-w-full divide-y divide-white/10">
+                        <div
+                            v-if="attendances.length"
+                            ref="tableWrapper"
+                            class="overflow-x-auto select-none"
+                            style="cursor: grab;"
+                            @mousedown="onMouseDown"
+                            @mouseleave="onMouseLeave"
+                            @mouseup="onMouseUp"
+                            @mousemove="onMouseMove"
+                        >
+                        <table class="min-w-full divide-y divide-white/10">
                             <thead class="bg-white/5">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Nama Ahli</th>
@@ -255,6 +293,7 @@ function executeDelete() {
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                         <p v-else class="text-sm text-sky-200/50">Tiada rekod kehadiran untuk mesyuarat ini.</p>
                     </div>
                 </div>

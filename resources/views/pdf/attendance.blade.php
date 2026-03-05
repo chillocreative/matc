@@ -21,13 +21,14 @@
         tr:nth-child(even) { background-color: #ddeef6; }
         tr:nth-child(odd) { background-color: #fff; }
         .no-col { width: 4%; text-align: center; }
-        .nama-col { width: 18%; }
-        .ic-col { width: 14%; }
-        .jawatan-col { width: 12%; }
-        .tel-col { width: 12%; }
-        .alamat-col { width: 20%; }
-        .status-col { width: 10%; }
+        .nama-col { width: 16%; }
+        .ic-col { width: 12%; }
+        .jawatan-col { width: 10%; }
+        .tel-col { width: 10%; }
+        .alamat-col { width: 18%; }
+        .status-col { width: 8%; }
         .sebab-col { width: 10%; }
+        .usul-col { width: 12%; }
         .status-hadir { color: #166534; font-weight: bold; }
         .status-tidak-hadir { color: #991b1b; font-weight: bold; }
         .status-lewat { color: #92400e; font-weight: bold; }
@@ -49,6 +50,7 @@
                 <th class="alamat-col">Alamat</th>
                 <th class="status-col">Status</th>
                 <th class="sebab-col">Sebab</th>
+                <th class="usul-col">Usul</th>
             </tr>
         </thead>
         <tbody>
@@ -71,9 +73,10 @@
                     <td>{{ $row['address'] ?? '-' }}</td>
                     <td class="{{ $statusClass }}">{{ $row['status'] ?? '-' }}</td>
                     <td>{{ $row['absence_reason'] ?? '-' }}</td>
+                    <td>{{ $row['suggestion'] ?? '-' }}</td>
                 </tr>
             @empty
-                <tr><td colspan="8" style="text-align:center;">Tiada rekod.</td></tr>
+                <tr><td colspan="9" style="text-align:center;">Tiada rekod.</td></tr>
             @endforelse
         </tbody>
     </table>
