@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController extends Controller
 {
@@ -61,7 +61,7 @@ class ReportController extends Controller
         return redirect()->route('laporan.index')->with('success', 'Laporan berjaya dimuat naik.');
     }
 
-    public function downloadFile(string $category): StreamedResponse
+    public function downloadFile(string $category): BinaryFileResponse
     {
         abort_unless(in_array($category, self::VALID_CATEGORIES, true), 404);
 
