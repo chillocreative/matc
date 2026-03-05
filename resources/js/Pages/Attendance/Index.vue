@@ -1,8 +1,19 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, computed } from 'vue';
 import axios from 'axios';
+
+// Search
+const searchQuery = ref('');
+const filteredAttendances = computed(() => {
+    if (!searchQuery.value.trim()) return props.attendances;
+    const q = searchQuery.value.trim().toLowerCase();
+    return props.attendances.filter(a =>
+        a.member?.name?.toLowerCase().includes(q) ||
+        a.member?.ic_number?.toLowerCase().includes(q)
+    );
+});
 
 // Drag-to-scroll
 const tableWrapper = ref(null);
@@ -212,6 +223,21 @@ function executeDelete() {
                     </select>
                 </div>
 
+                <div v-if="meeting" class="mb-4">
+                    <label class="block text-sm font-medium text-sky-100/80 mb-1">Cari Ahli</label>
+                    <div class="relative sm:max-w-md">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-sky-300/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                        <input
+                            v-model="searchQuery"
+                            type="text"
+                            placeholder="Cari nama atau No. IC..."
+                            class="w-full rounded-md border-0 bg-white/10 pl-9 pr-4 py-2 text-white placeholder-sky-300/40 ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400 text-sm"
+                        />
+                    </div>
+                </div>
+
                 <div v-if="meeting" class="overflow-hidden rounded-2xl bg-white/10 shadow-lg backdrop-blur-md ring-1 ring-white/15">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
@@ -236,7 +262,7 @@ function executeDelete() {
                         </div>
 
                         <div
-                            v-if="attendances.length"
+                            v-if="filteredAttendances.length"
                             ref="tableWrapper"
                             class="overflow-x-auto select-none"
                             style="cursor: grab;"
@@ -259,7 +285,7 @@ function executeDelete() {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/10">
-                                <tr v-for="attendance in attendances" :key="attendance.id" class="hover:bg-white/5">
+                                <tr v-for="attendance in filteredAttendances" :key="attendance.id" class="hover:bg-white/5">
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-white uppercase">{{ attendance.member?.name }}</td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50 uppercase">{{ attendance.member?.ic_number }}</td>
                                     <td class="px-6 py-4 text-sm">
@@ -309,7 +335,7 @@ function executeDelete() {
                             </tbody>
                         </table>
                         </div>
-                        <p v-else class="text-sm text-sky-200/50">Tiada rekod kehadiran untuk mesyuarat ini.</p>
+                        <p v-else class="text-sm text-sky-200/50">{{ searchQuery ? 'Tiada rekod yang sepadan dengan carian.' : 'Tiada rekod kehadiran untuk mesyuarat ini.' }}</p>
                     </div>
                 </div>
 

@@ -36,9 +36,6 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('members.index')" :active="route().current('members.*')">
-                                    Ahli
-                                </NavLink>
                                 <NavLink :href="route('meetings.index')" :active="route().current('meetings.*')">
                                     Mesyuarat
                                 </NavLink>
@@ -107,9 +104,6 @@ const showingNavigationDropdown = ref(false);
                     <div class="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('members.index')" :active="route().current('members.*')">
-                            Ahli
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('meetings.index')" :active="route().current('meetings.*')">
                             Mesyuarat
