@@ -45,15 +45,10 @@ enum CategoryType: string
     {
         return match ($this) {
             self::Matc => [
+                'AJK Cabang',
+                'AJK Wanita Cabang',
+                'AJK AMK Cabang',
                 'Anggota Biasa',
-                'Ketua Cabang',
-                'Timbalan Ketua Cabang',
-                'Naib Ketua Cabang',
-                'Setiausaha',
-                'Setiausaha Pengelola',
-                'Bendahari',
-                'Ketua Penerangan',
-                'AJK',
             ],
             self::Amk => [
                 'Anggota Biasa',
