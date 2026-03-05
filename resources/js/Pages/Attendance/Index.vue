@@ -52,7 +52,7 @@ const props = defineProps({
 
 const page = usePage();
 const selectedMeeting = ref(props.filters.meeting_id || '');
-const selectedCategory = ref(props.filters.category || '');
+const selectedCategory = ref(props.filters.category || 'matc');
 
 function applyFilters() {
     const params = { meeting_id: selectedMeeting.value };
@@ -217,7 +217,6 @@ function executeDelete() {
                             @change="onCategoryChange"
                             class="w-full rounded-md border-0 bg-white/10 text-white ring-1 ring-white/15 focus:ring-2 focus:ring-sky-400"
                         >
-                            <option value="" class="bg-sky-900 text-white">Semua</option>
                             <option value="matc" class="bg-sky-900 text-white">MATC</option>
                             <option value="amk" class="bg-sky-900 text-white">MATAMKC</option>
                             <option value="wanita" class="bg-sky-900 text-white">MATWC</option>
