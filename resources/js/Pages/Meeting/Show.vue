@@ -88,6 +88,7 @@ function formatDate(date) {
                         <table v-if="meeting.attendances?.length" class="mt-4 min-w-full divide-y divide-white/10">
                             <thead class="bg-white/5">
                                 <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Bil.</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Nama Ahli</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">No. IC</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-200/60">Status</th>
@@ -95,7 +96,8 @@ function formatDate(date) {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/10">
-                                <tr v-for="attendance in meeting.attendances" :key="attendance.id" class="hover:bg-white/5">
+                                <tr v-for="(attendance, index) in meeting.attendances" :key="attendance.id" class="hover:bg-white/5">
+                                    <td class="whitespace-nowrap px-4 py-4 text-sm text-sky-200/60">{{ index + 1 }}</td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-white">{{ attendance.member?.name }}</td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ attendance.member?.ic_number }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">
