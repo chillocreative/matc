@@ -4,6 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     stats: Object,
+    latest_meeting: Object,
     upcoming_meetings: Array,
 });
 
@@ -25,6 +26,9 @@ const statCards = [
         <div class="py-8 sm:py-12">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <!-- Stats Grid -->
+                <div v-if="latest_meeting" class="mb-3 text-xs text-sky-300/60">
+                    Data kehadiran bagi: <span class="font-medium text-sky-200/80">{{ latest_meeting.title }}</span> &middot; {{ latest_meeting.date }}
+                </div>
                 <div class="grid grid-cols-3 gap-3 sm:gap-6 lg:grid-cols-3">
                     <div
                         v-for="card in statCards"
