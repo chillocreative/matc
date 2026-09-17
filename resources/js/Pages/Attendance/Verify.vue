@@ -22,6 +22,16 @@ function submit() {
         },
     });
 }
+
+function formatDate(date) {
+    if (!date) return '-';
+    return new Date(date).toLocaleDateString('ms-MY', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'Asia/Kuala_Lumpur',
+    });
+}
 </script>
 
 <template>
@@ -88,7 +98,7 @@ function submit() {
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ i + 1 }}</td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-white">{{ att.member?.name }}</td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ att.member?.ic_number }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ att.created_at }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-sky-200/50">{{ formatDate(att.created_at) }}</td>
                                 </tr>
                             </tbody>
                         </table>

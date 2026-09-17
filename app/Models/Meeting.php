@@ -26,7 +26,7 @@ class Meeting extends Model
     protected function casts(): array
     {
         return [
-            'date' => 'date',
+            'date' => 'date:Y-m-d',
             'status' => MeetingStatus::class,
             'suggestion_enabled' => 'boolean',
         ];
