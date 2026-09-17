@@ -60,6 +60,10 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+                // Production PHP is linked against libmariadb 10.5 whose binary
+                // prepared-statement protocol returns garbled rows from MariaDB 11.4.
+                // Emulated prepares use the text protocol, which decodes correctly.
+                \PDO::ATTR_EMULATE_PREPARES => env('DB_EMULATE_PREPARES', true),
             ]) : [],
         ],
 
