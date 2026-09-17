@@ -70,7 +70,6 @@ class QrAttendanceController extends Controller
             'category' => $categoryEnum->value,
             'categoryLabel' => $categoryEnum->label(),
             'meeting' => $meeting,
-            'attendances' => $meeting ? $this->attendanceService->getByMeeting($meeting->id) : [],
             'verifyUrl' => route('qr.'.$categoryEnum->slug().'.verify'),
             'formToken' => Crypt::encryptString((string) now()->timestamp),
             'recaptchaSiteKey' => config('services.recaptcha.site_key', ''),
@@ -89,13 +88,10 @@ class QrAttendanceController extends Controller
     {
         $categoryEnum = CategoryType::fromSlug($category);
 
-        $attendances = $this->attendanceService->getByMeeting($meeting->id);
-
         return Inertia::render('QrAttendance/Hadir', [
             'category' => $categoryEnum->value,
             'categoryLabel' => $categoryEnum->label(),
             'meeting' => $meeting,
-            'attendances' => $attendances,
             'verifyUrl' => $request->fullUrl(),
             'formToken' => Crypt::encryptString((string) now()->timestamp),
             'recaptchaSiteKey' => config('services.recaptcha.site_key', ''),

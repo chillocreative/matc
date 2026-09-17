@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import KehadiranForm from '@/Components/KehadiranForm.vue';
 import { computed } from 'vue';
 
@@ -7,7 +7,6 @@ const props = defineProps({
     category: String,
     categoryLabel: String,
     meeting: Object,
-    attendances: Array,
     verifyUrl: String,
     formToken: String,
     recaptchaSiteKey: String,
@@ -24,10 +23,6 @@ const categoryColors = {
 };
 
 const colors = categoryColors[props.category] || categoryColors.matc;
-
-function onVerified() {
-    router.reload({ only: ['attendances'] });
-}
 </script>
 
 <template>
@@ -91,7 +86,6 @@ function onVerified() {
                     :suggestion-enabled="!!meeting?.suggestion_enabled"
                     :matc-url="matcUrl"
                     :dark="true"
-                    @verified="onVerified"
                 />
             </div>
         </div>
